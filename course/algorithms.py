@@ -10,7 +10,6 @@ def push_content(lesson_id, part_of_the_lesson):
     return css, js, title, content
 
 
-
 def last_next_content(lesson_id, part_of_the_lesson):
     previous = True
     sequent = True
@@ -29,4 +28,3 @@ def last_next_content(lesson_id, part_of_the_lesson):
         sequent = False
 
     return previous, sequent, p_idx, s_idx
-

@@ -2,7 +2,7 @@
 .nav {
     display: block;
     text-align: center;
-    width: 80%;
+    background-color: #333;
 }
 
 .nav a {
@@ -10,10 +10,11 @@
     transition: ease-in-out color .15s;
 }
 
-.brain, .nav img{
+.brain, .nav img {
     max-height: 100px;
     max-width: 100px;
 }
+
 .nav a:hover {
     color: #fff;
     text-decoration: none;
@@ -23,14 +24,16 @@
     color: #a71d2a;
 }
 
-.mri-color{
+.mri-color {
     background-color: white;
 }
+
 /*Content properties*/
 html,
 body {
     height: 100%;
-    background-color: #333;
+    background-color: darkgray;
+
 }
 
 body {
@@ -38,13 +41,21 @@ body {
     display: flex;
     color: #fff;
     text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5);
-    box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
 }
 
 .mri-container {
     background-color: white;
     width: 80%;
     color: #333;
+    padding: 30px 0px 30px;
+}
+
+.text-perc{
+    width: 98%;
 }
 
 /*Footer properties*/
+footer {
+    background-color: #333;
+    padding: 30px 10px 30px;
+}
