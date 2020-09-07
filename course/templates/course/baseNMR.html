@@ -7,14 +7,26 @@
 {% block content %}
 
     <div class="row text-center text-perc">
-        <div class="col-sm-3 mx-auto text-center">
-            inne linki
+        <div class="col-sm-3 mx-auto text-justify">
+            <h2 class="base-color text-center">Menu</h2>
+
+            <ol class="menu-links font-weight-bold">
+                {% for key, value in links.items %}
+                    {% if value == None %}
+                        <li><p class="isDisabled">{{ key }}</p></li>
+                    {% else %}
+                    <li><a href="../{{ value }}">{{ key }}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ol>
         </div>
 
         <div class="col-sm-9 mx-auto">
-            <h1 class="base-color">{{ title }}</h1><br>
+            <h1 class="base-color">{{ title }}</h1>
+            <br>
 
             {{ text|safe }}
+            <br>
             <div class="col-12">
                 {% if previous %}
                     <a href="../{{ p_idx }}">

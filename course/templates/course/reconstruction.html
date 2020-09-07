@@ -6,13 +6,81 @@
 
 {% block content %}
     <div class="row text-center">
-        <div class="col-sm-2 mx-auto text-center">
-            inne linki
+        <div class="col-sm-2 mx-auto text-left">
+            <h2 class="base-color text-center">Menu</h2>
+
+            <ol class="menu-links font-weight-bold">
+                {% for key, value in links.items %}
+                    {% if value == None %}
+                        <li><p class="isDisabled">{{ key }}</p></li>
+                    {% else %}
+                        <li><a href="../{{ value }}">{{ key }}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ol>
         </div>
 
         <div class="col-sm-9 mx-auto">
-            <h4 class="base-color">{{ title }}</h4>
+            <h1 class="base-color">{{ title }}</h1><br>
             {{ text|safe }}
+
+            {% if form %}
+                <br>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <div>
+                        <label for="{{ form.coils.id_for_label }}">{{ form.coils.label }}</label>
+                        {{ form.coils }}
+                    </div>
+
+                    <div id="correlation-container">
+                        <label for="{{ form.correlation.id_for_label }}">{{ form.correlation.label }}</label>
+                        {{ form.correlation }}
+                    </div>
+
+                    <div>
+                        <label for="{{ form.sigma.id_for_label }}">{{ form.sigma.label }}</label>
+                        {{ form.sigma }}
+                    </div>
+
+                    <div id="reconstruction-container">
+                        <label for="{{ form.reconstruction.id_for_label }}">{{ form.reconstruction.label }}</label>
+                        {{ form.reconstruction }}
+                    </div>
+                    <div id="reconstruction-one-channel">Metodą rekonstrukcji dla jednokanałowego jest metoda SoS</div>
+
+                    <input type="submit" value="Wyślij">
+                </form>
+
+
+                {% if filename is not None %}
+                    <p> Stworzono dane dla następujących parametrów: </p>
+                    <p> Ilość kanałów odbiorczych: {{ coils }} </p>
+                    <p> Stopień zaszumienia danych: {{ sigma }} </p>
+                    <p> Stosowana metoda rekonstrukcji: {{ reconstruction }} </p> <br>
+
+                    {% if coils == 1 %}
+                        <img src="../../static/{{ filename }}" height="300" width="300"/>
+                    {% elif coils == 4 and reconstruction == 'Metoda SoS dla obrazowania wielokanałowego' %}
+                        <img src="../../static/{{ filename }}" height="512" width="512"/>
+                    {% elif coils == 4 and reconstruction == 'Metoda SENSE' %}
+                        <img src="../../static/{{ filename }}" height="300" width="600"/>
+                    {% elif coils > 5 and reconstruction == 'Metoda SoS dla obrazowania wielokanałowego' %}
+                        <img src="../../static/{{ filename }}" height="400" width="800"/>
+                    {% else %}
+                        <img src="../../static/{{ filename }}" height="500" width="500"/>
+                    {% endif %}
+                    <p><b> Rysunek. Graficzne przedstawienie danych pochodzących z przestrzeni k. </b></p>
+
+                    <img src="../../static/{{ filenameX }}" height="400" width="400"/>
+                    <p><b> Rysunek. Zrekonstruowany obraz. </b></p>
+
+                    <b>Symulator. Akwizycja i rekonstrukcja obrazu metodą rezonansu magnetycznego.</b>
+                    </br>
+                {% endif %}
+
+            {% endif %}
+            <br>
             <div class="col-12">
                 {% if previous %}
                     <a href="../{{ p_idx }}">
@@ -49,8 +117,8 @@
 {% block script %}
 
     <script async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"
-        type="text/javascript"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+            type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
     <script>
         {{ js|safe }}
