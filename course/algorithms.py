@@ -30,6 +30,8 @@ def last_next_content(lesson_id, part_of_the_lesson):
         p = LessonContent.objects.get(lesson_id=lesson_id, part_of_the_lesson=p_idx)
     except LessonContent.DoesNotExist:
         previous = False
+    if p_idx == 0:
+        previous = False
 
     try:
         n = LessonContent.objects.get(lesson_id=lesson_id, part_of_the_lesson=s_idx)
@@ -37,6 +39,40 @@ def last_next_content(lesson_id, part_of_the_lesson):
         sequent = False
 
     return previous, sequent, p_idx, s_idx
+
+
+def defining_links(lesson_id):
+    links = None
+    if lesson_id == 1:
+        links = {'Jądrowy moment magnetyczny': '1', 'Częstotliwość Larmora': '2', 'Zjawisko rezonansu': '3',
+             'Symulator - wpływ impulsu na wektor magnetyzacji': '4', 'Słowniczek i bibliografia': '5'}
+    if lesson_id == 2:
+        links = {'Wpływ impulsu RF na wektor magnetyzacji': '1', 'Zjawisko relaksacji': '2', 'Sekwencja spin-echo': '3',
+                 'Diagram przedstawiający sekwencję spin-echo': '4',
+                 'Animacja przedstawiająca sekwencję spin-echo': '5',
+                 'Wykorzystanie echa spinowego w MRI': '6',
+                 'Przedstawienie obrazu mózgu z wykorzystaniem różnych wartości parametrów TE oraz TR': 7,
+                 'Obrazy T1-, T2- i PD-zależne': '8', 'Symulator - wybierz czas TR oraz TE': '9',
+                 'Zalety i wady echa spinowego': '10', 'Słowniczek i bibliografia': '11'}
+    if lesson_id == 3:
+        links = {'Przestrzeń k': '1', 'Przestrzenie danych i kroki przetwarzania': '2',
+                 'Schemat - przestrzeń k oraz x': '3', 'Symulator - próbkowanie sygnału': '4',
+                 'Akwizycja danych i wypełnianie przestrzeni k ': '5', 'Obrazowanie jednokanałowe i wielokanałowe': '6',
+                 'Obrazowanie równoległe': '7', 'Słowniczek i bibliografia': '8'}
+    if lesson_id == 4:
+        links = {'Jednokanałowa akwizycja sygnału': '1', 'Wielokanałowa akwizycja sygnału': '2',
+                 'Metoda SMF oraz SoS': '3',
+                 'Obrazowanie równoległe przyspieszone - SENSE': '4', 'Metoda SENSE': '5', 'Metoda GRAPPA': '6',
+                 'Symulator: rekonstrukcja obrazu': '7', 'Słowniczek i bibliografia': '8'}
+
+    if lesson_id == 5:
+        links = {'Dyfuzja': '1', 'Mierzenie dyfuzji': '2',
+                 'Symulator - wpływ gradientu pola magnetycznego na rotację momentów magnetycznych': '3',
+                 'Obrazowanie dyfuzji metodą rezonansu magnetycznego DWI': '4', 'Obrazowanie dyfuzyjne': '5',
+                 'Obrazowanie tensora dyfuzji DTI': '6', 'Zastosowanie kliniczne obrazowania dyfuzji': '7',
+                 'Słowniczek i bibliografia': '8'}
+
+    return links
 
 
 def sensitivity_map(Mx, My, coils):

@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 import pylab
 from django.shortcuts import render
 
-from course.algorithms import last_next_content, push_content, my_reconstruction, generate_k_space_and_x_space_graphs
+from course.algorithms import last_next_content, push_content, my_reconstruction, generate_k_space_and_x_space_graphs, \
+    defining_links
 from course.forms import AlgorithmForm
 from course.models import Lesson, LessonContent
 
@@ -18,51 +19,61 @@ def index(request):
 def basic_nmr(request, part):
     css, js, title, content = push_content(1, part)
     previous, sequent, p_idx, s_idx = last_next_content(1, part)
-    links = {'Jądrowy moment magnetyczny': '1', 'Częstotliwość Larmora': '2', 'Zjawisko rezonansu': '3',
-             'Symulator - wpływ impulsu na wektor magnetyzacji': '4', 'Słowniczek i bibliografia': '5'}
-
-    for k, v in links.items():
-        print(k, 'corresponds to', v)
+    links = defining_links(1)
 
     return render(request, 'course/baseNMR.html',
                   {'css': css, 'js': js, 'title': title, 'text': content, 'previous': previous, 'sequent': sequent,
-                   'p_idx': p_idx, 's_idx': s_idx, 'links': links})
+                   'p_idx': p_idx, 's_idx': s_idx, 'links': links, 'part': part})
+
+
+def basic_nmr_base(request):
+    css, js, title, content = push_content(1, 0)
+    links = defining_links(1)
+
+    return render(request, 'course/baseNMR.html',
+                  {'text': content, 'links': links, 'title': title, 'sequent': True, 's_idx': 1})
 
 
 def spin_echo(request, part):
     css, js, title, content = push_content(2, part)
     previous, sequent, p_idx, s_idx = last_next_content(2, part)
-    links = {'Wpływ impulsu RF na wektor magnetyzacji': '1', 'Zjawisko relaksacji': '2', 'Sekwencja spin-echo': '3',
-             'Diagram przedstawiający sekwencję spin-echo': '4', 'Animacja przedstawiająca sekwencję spin-echo': '5',
-             'Wykorzystanie echa spinowego w MRI': '6',
-             'Przedstawienie obrazu mózgu z wykorzystaniem różnych wartości parametrów TE oraz TR': 7,
-             'Obrazy T1-, T2- i PD-zależne': '8', 'Symulator - wybierz czas TR oraz TE': '9',
-             'Zalety i wady echa spinowego': '10', 'Słowniczek i bibliografia': '11'}
+    links = defining_links(2)
 
     return render(request, 'course/spin_echo.html',
                   {'css': css, 'js': js, 'title': title, 'text': content, 'previous': previous, 'sequent': sequent,
-                   'p_idx': p_idx, 's_idx': s_idx, 'links': links})
+                   'p_idx': p_idx, 's_idx': s_idx, 'links': links, 'part': part})
+
+
+def spin_echo_base(request):
+    css, js, title, content = push_content(2, 0)
+    links = defining_links(2)
+
+    return render(request, 'course/baseNMR.html',
+                  {'text': content, 'links': links, 'title': title, 'sequent': True, 's_idx': 1})
 
 
 def k_space(request, part):
     css, js, title, content = push_content(3, part)
     previous, sequent, p_idx, s_idx = last_next_content(3, part)
-    links = {'Przestrzeń k': '1', 'Przestrzenie danych i kroki przetwarzania': '2',
-             'Schemat - przestrzeń k oraz x': '3', 'Symulator - próbkowanie sygnału': '4',
-             'Akwizycja danych i wypełnianie przestrzeni k ': '5', 'Obrazowanie jednokanałowe i wielokanałowe': '6',
-             'Obrazowanie równoległe': '7', 'Słowniczek i bibliografia': '8'}
+    links = defining_links(3)
 
     return render(request, 'course/k_space.html',
                   {'css': css, 'js': js, 'title': title, 'text': content, 'previous': previous, 'sequent': sequent,
                    'p_idx': p_idx, 's_idx': s_idx, 'links': links})
 
 
+def k_space_base(request):
+    css, js, title, content = push_content(3, 0)
+    links = defining_links(3)
+
+    return render(request, 'course/k_space.html',
+                  {'text': content, 'links': links, 'title': title, 'sequent': True, 's_idx': 1})
+
+
 def reconstruction(request, part):
     css, js, title, content = push_content(4, part)
     previous, sequent, p_idx, s_idx = last_next_content(4, part)
-    links = {'Jednokanałowa akwizycja sygnału': '1', 'Wielokanałowa akwizycja sygnału': '2', 'Metoda SMF oraz SoS': '3',
-             'Obrazowanie równoległe przyspieszone - SENSE': '4', 'Metoda SENSE': '5', 'Metoda GRAPPA': '6',
-             'Symulator: rekonstrukcja obrazu': '7', 'Słowniczek i bibliografia': '8'}
+    links = defining_links(4)
 
     if int(part) == 7:
         filename = None
@@ -110,16 +121,36 @@ def reconstruction(request, part):
                    'p_idx': p_idx, 's_idx': s_idx, 'links': links})
 
 
+def reconstruction_base(request):
+    css, js, title, content = push_content(4, 0)
+    links = defining_links(4)
+
+    return render(request, 'course/reconstruction.html',
+                  {'text': content, 'links': links, 'title': title, 'sequent': True, 's_idx': 1})
+
+
 def diffusion(request, part):
     css, js, title, content = push_content(5, part)
     previous, sequent, p_idx, s_idx = last_next_content(5, part)
 
-    links = {'Dyfuzja': '1', 'Mierzenie dyfuzji': '2',
-             'Symulator - wpływ gradientu pola magnetycznego na rotację momentów magnetycznych': '3',
-             'Obrazowanie dyfuzji metodą rezonansu magnetycznego DWI': '4', 'Obrazowanie dyfuzyjne': '5',
-             'Obrazowanie tensora dyfuzji DTI': '6', 'Zastosowanie kliniczne obrazowania dyfuzji': '7',
-             'Słowniczek i bibliografia': '8'}
+    links = defining_links(5)
 
     return render(request, 'course/diffusion.html',
                   {'css': css, 'js': js, 'title': title, 'text': content, 'previous': previous, 'sequent': sequent,
                    'p_idx': p_idx, 's_idx': s_idx, 'links': links})
+
+
+def diffusion_base(request):
+    css, js, title, content = push_content(5, 0)
+    links = defining_links(5)
+
+    return render(request, 'course/diffusion.html',
+                  {'text': content, 'links': links, 'title': title, 'sequent': True, 's_idx': 1})
+
+
+def lessons(request):
+    return render(request, 'course/lessons.html')
+
+
+def quiz(request):
+    return render(request, 'course/quiz.html')

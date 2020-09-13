@@ -5,10 +5,15 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
+    url(r'^podstawy_nmr/$', views.basic_nmr_base, name='basicNMR_base'),
     url(r'^podstawy_nmr/([0-9]+)/$', views.basic_nmr, name='basicNMR'),
+    url(r'^spin_echo/$', views.spin_echo_base, name='spin_echo_base'),
     url(r'^spin_echo/([0-9]+)/$', views.spin_echo, name='spin_echo'),
+    url(r'^dane_w_przestrzeni_k/$', views.k_space_base, name='k_space_base'),
     url(r'^dane_w_przestrzeni_k/([0-9]+)/$', views.k_space, name='k_space'),
+    url(r'^rekonstrukcja_danych/$', views.reconstruction_base, name='reconstruction_base'),
     url(r'^rekonstrukcja_danych/([0-9]+)/$', views.reconstruction, name='reconstruction'),
+    url(r'^obrazowanie_dyfuzji/$', views.diffusion_base, name='diffusion_base'),
     url(r'^obrazowanie_dyfuzji/([0-9]+)/$', views.diffusion, name='diffusion'),
 
 ]
