@@ -1,4 +1,21 @@
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+
+
+class SignUpForm(UserCreationForm):
+    username = forms.CharField(label="Podaj nazwę użytkownika:")
+    password1 = forms.CharField(widget=forms.PasswordInput(), label="Podaj hasło:")
+    password2 = forms.CharField(widget=forms.PasswordInput(), label="Powtórz hasło:")
+
+    class Meta:
+        model = User
+        fields = ('username', 'password1', 'password2')
+
+
+class LoginForm(forms.Form):
+    username = forms.CharField(label='Podaj nazwę użytkownika', max_length=64)
+    password = forms.CharField(label="Podaj hasło", widget=forms.PasswordInput())
 
 
 class AlgorithmForm(forms.Form):

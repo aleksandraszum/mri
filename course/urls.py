@@ -5,6 +5,9 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
+    url(r'^zaloz_konto/$', views.signup, name='signup'),
+    url(r'^wylogowanie/$', views.logout_view, name='logout_view'),
+    url(r'^logowanie/$', views.login_view, name='login_view'),
     url(r'^podstawy_nmr/$', views.basic_nmr_base, name='basicNMR_base'),
     url(r'^podstawy_nmr/([0-9]+)/$', views.basic_nmr, name='basicNMR'),
     url(r'^spin_echo/$', views.spin_echo_base, name='spin_echo_base'),

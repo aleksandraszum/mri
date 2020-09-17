@@ -19,21 +19,22 @@
 
     <nav class=" nav navbar-expand-lg navbar py-1 ">
         <div class="row align-items-center">
-            <div class="col-12">
+            <div class="col-12">        <br>
+
                 <a class="py-2" href="#" aria-label="Product">
-                    <h1 class="text-center">Obrazowanie metodą <span class="base-color">rezonansu magnetycznego</span>
-                        bez tajemnic</h1>
+                    <H1 class="text-center"> <a href="http://127.0.0.1:8000/"> Obrazowanie metodą <span class="base-color">rezonansu magnetycznego</span>
+                        bez tajemnic </a></H1>
                 </a>
 
             </div>
             <div class="col-12">
                 <div class="container d-flex flex-column flex-md-row justify-content-between text-center">
 
-                    {% if login %}
+                    {% if login == False %}
                         <div class="col-4">
-                            <a class="py-2 d-none d-md-inline-block" href="#">Załóż konto</a></div>
+                            <a class="py-2 d-none d-md-inline-block" href="{% url 'signup' %}">Załóż konto</a></div>
                         <div class="col-4">
-                            <a class="py-2 d-none d-md-inline-block" href="#">Zaloguj się</a></div>
+                            <a class="py-2 d-none d-md-inline-block" href="{% url 'login_view' %}">Zaloguj się</a></div>
 
                     {% else %}
                         <div class="col-4">
@@ -41,8 +42,7 @@
                         <div class="col-4">
                             <a class="py-2 d-none d-md-inline-block" href="#">Lekcje</a></div>
                         <div class="col-4">
-                            <a class="py-2 d-none d-md-inline-block" href="#">Wyloguj się</a></div>
-
+                            <a class="py-2 d-none d-md-inline-block" href="{% url 'logout_view' %}">Wyloguj się</a></div>
                     {% endif %}
 
                 </div>
