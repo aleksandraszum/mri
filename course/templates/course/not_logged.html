@@ -1,0 +1,23 @@
+<div class="row text-center text-perc">
+    <div class="col-sm-12 mx-auto text-center">
+        <br>
+        <h3> Lekcja: </h3>
+        <h1 class="base-color"> {{ title }}</h1>
+        <br>
+        <h2 class="base-color">{{ communicate }}</h2>
+        <br>
+        <h3> Jeśli nie posiadasz konta:</h3>
+        <br>
+        <a href="{% url 'signup' %}">
+            <button type="submit" class="btn btn-lg btn-secondary">Załóż konto</button>
+        </a>
+
+        <br><br>
+        <h3> Jeżeli posiadasz konto:</h3>
+        <br>
+        <a href="{% url 'login_view' %}">
+            <button type="submit" class="btn btn-lg btn-secondary">Zaloguj się</button>
+        </a>
+
+    </div>
+</div>

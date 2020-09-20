@@ -6,52 +6,57 @@
 
 {% block content %}
     <div class="row text-center">
-        <div class="col-sm-3 mx-auto text-left">
-            <h2 class="base-color text-center">Menu</h2>
+        {% if login == True %}
+            <div class="col-sm-3 mx-auto text-left">
+                <h2 class="base-color text-center">Menu</h2>
 
-            <ol class="menu-links font-weight-bold">
-                {% for key, value in links.items %}
-                    {% if value == None %}
-                        <li><p class="isDisabled">{{ key }}</p></li>
-                    {% else %}
-                        <li><a href="../{{ value }}">{{ key }}</a></li>
-                    {% endif %}
-                {% endfor %}
-            </ol>
-        </div>
-
-        <div class="col-sm-8 mx-auto">
-            <h1 class="base-color">{{ title }}</h1>
-            <br>
-
-            {{ text|safe }}
-        <br>
-            <div class="col-12">
-                {% if previous %}
-                    <a href="../{{ p_idx }}">
-                        <svg width="2em" height="2em" viewBox="0 0 16 16"
-                             class="bi bi-arrow-left-circle-fill float-left base-color"
-                             fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd"
-                                  d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.5.5a.5.5 0 0 0 0-1H5.707l2.147-2.146a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L5.707 8.5H11.5z"></path>
-                        </svg>
-                    </a>
-                {% endif %}
-
-                {% if sequent %}
-                    <a href="../{{ s_idx }}">
-                        <svg width="2em" height="2em" viewBox="0 0 16 16"
-                             class="bi bi-arrow-right-circle-fill float-right base-color"
-                             fill="currentColor"
-                             xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd"
-                                  d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-11.5.5a.5.5 0 0 1 0-1h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5z"></path>
-                        </svg>
-                    </a>
-                {% endif %}
+                <ol class="menu-links font-weight-bold">
+                    {% for key, value in links.items %}
+                        {% if value == None %}
+                            <li><p class="isDisabled">{{ key }}</p></li>
+                        {% else %}
+                            <li><a href="../{{ value }}">{{ key }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                </ol>
             </div>
 
-        </div>
+            <div class="col-sm-8 mx-auto">
+                <h1 class="base-color">{{ title }}</h1>
+                <br>
+
+                {{ text|safe }}
+                <br>
+                <div class="col-12">
+                    {% if previous %}
+                        <a href="../{{ p_idx }}">
+                            <svg width="2em" height="2em" viewBox="0 0 16 16"
+                                 class="bi bi-arrow-left-circle-fill float-left base-color"
+                                 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                      d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.5.5a.5.5 0 0 0 0-1H5.707l2.147-2.146a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L5.707 8.5H11.5z"></path>
+                            </svg>
+                        </a>
+                    {% endif %}
+
+                    {% if sequent %}
+                        <a href="../{{ s_idx }}">
+                            <svg width="2em" height="2em" viewBox="0 0 16 16"
+                                 class="bi bi-arrow-right-circle-fill float-right base-color"
+                                 fill="currentColor"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                      d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-11.5.5a.5.5 0 0 1 0-1h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5z"></path>
+                            </svg>
+                        </a>
+                    {% endif %}
+                </div>
+
+            </div>
+        {% else %}
+            {% include 'course/not_logged.html' %}
+        {% endif %}
+
     </div>
     <br>
 

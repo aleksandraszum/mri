@@ -1,13 +1,45 @@
 import os
-
 import numpy as np
-from math import pi, cos, sin, sqrt, log
+from math import pi, cos, sin, sqrt
+
+from django.contrib.auth.models import User
 from mat4py import loadmat
-import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 import pylab
+from course.models import LessonContent, Lesson, LessonProgress, LessonComplete
 
-from course.models import LessonContent, Lesson
+
+def lesson_progress_check(user_id, lesson_id, part):
+    previous = True
+    try:
+        previous_lesson = LessonProgress.objects.get(user_id=user_id, lesson_id=lesson_id, part=part)
+    except LessonProgress.DoesNotExist:
+        previous = False
+    return previous
+
+
+def save_lesson_progress(user_id, lesson_id, part):
+    try:
+        previous_lesson = LessonProgress.objects.get(user_id=user_id, lesson_id=lesson_id, part=part)
+    except LessonProgress.DoesNotExist:
+        previous_lesson = LessonProgress(user_id=User(pk=user_id), lesson_id=Lesson(pk=lesson_id), part=part)
+        previous_lesson.save()
+
+
+def lesson_complete(user_id, lesson_id):
+    try:
+        is_complete = LessonComplete.objects.get(user_id=user_id, lesson_id=lesson_id)
+    except LessonComplete.DoesNotExist:
+        return False
+    return True
+
+
+def save_lesson_complete(user_id, lesson_id):
+    try:
+        is_complete = LessonComplete.objects.get(user_id=user_id, lesson_id=lesson_id)
+    except LessonComplete.DoesNotExist:
+        previous_lesson = LessonComplete(user_id=User(pk=user_id), lesson_id=Lesson(pk=lesson_id))
+        previous_lesson.save()
 
 
 def push_content(lesson_id, part_of_the_lesson):
@@ -45,7 +77,7 @@ def defining_links(lesson_id):
     links = None
     if lesson_id == 1:
         links = {'Jądrowy moment magnetyczny': '1', 'Częstotliwość Larmora': '2', 'Zjawisko rezonansu': '3',
-             'Symulator - wpływ impulsu na wektor magnetyzacji': '4', 'Słowniczek i bibliografia': '5'}
+                 'Symulator - wpływ impulsu na wektor magnetyzacji': '4', 'Słowniczek i bibliografia': '5'}
     if lesson_id == 2:
         links = {'Wpływ impulsu RF na wektor magnetyzacji': '1', 'Zjawisko relaksacji': '2', 'Sekwencja spin-echo': '3',
                  'Diagram przedstawiający sekwencję spin-echo': '4',

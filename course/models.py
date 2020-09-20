@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 
@@ -31,3 +32,23 @@ class Quiz(models.Model):
 
     def __str__(self):
         return f"Lesson ID: {self.lesson_id} - ask: {self.ask}"
+
+
+class LessonProgress(models.Model):
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    lesson_id = models.ForeignKey('Lesson', on_delete=models.CASCADE)
+    part = models.IntegerField()
+
+    def __str__(self):
+        return f"User: {self.user_id} - lesson: {self.lesson_id} - content: {self.part}"
+
+
+class LessonComplete(models.Model):
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    lesson_id = models.ForeignKey('Lesson', on_delete=models.CASCADE)
+    complete = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"User: {self.user_id} - lesson: {self.lesson_id}"
+
+
