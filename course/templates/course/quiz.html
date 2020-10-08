@@ -1,0 +1,25 @@
+
+
+{% for q in asks %}
+    <p>{{ q.ask }}</p>
+    <p> {{ q.answer_1 }}</p>
+{% endfor %}
+
+
+{#{{ asks }}#}
+
+<form method="post" action="">
+    {% csrf_token %}
+    {% for field in form %}
+        {% if field.errors %}
+            {% for error in field.errors %}
+                <p style="color: darkblue">{{ error }}</p>
+            {% endfor %}
+        {% endif %}
+        <p> {{ field.label_tag }}<br>
+            {{ field }}
+        </p>
+    {% endfor %}
+    <input type="submit" class="btn btn-lg btn-secondary" value="Edit"/>
+    <hr>
+</form>

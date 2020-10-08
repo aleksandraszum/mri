@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
+from course.models import Quiz
+
 
 class SignUpForm(UserCreationForm):
     username = forms.CharField(label="Podaj nazwę użytkownika:")
@@ -28,3 +30,22 @@ class AlgorithmForm(forms.Form):
     RECONSTRUCTION_CHOICES = (('0', 'SoS'), ('1', 'SENSE'))
     reconstruction = forms.ChoiceField(label='Wybierz metodę rekonstrukcji', choices=RECONSTRUCTION_CHOICES,
                                        required=False)
+
+
+class QuizForm(forms.Form):
+    # answer_1 = forms.MultipleChoiceField()
+    # answer_2 = forms.CharField(max_length=200)
+    # answer_3 = forms.CharField(max_length=200)
+    # answer_4 = forms.CharField(max_length=200)
+
+    # class Meta:
+    #     model = Quiz
+    #     fields = ('answer_1', 'answer_2', 'answer_3', 'answer_4')
+
+    def __init__(self, Quiz_object):
+        super(QuizForm, self).__init__()
+        answer_1 = forms.MultipleChoiceField(
+            required=False,
+            widget=forms.CheckboxSelectMultiple,
+            choices=Quiz_object,
+        )

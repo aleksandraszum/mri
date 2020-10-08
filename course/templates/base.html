@@ -30,7 +30,7 @@
             <div class="col-12">
                 <div class="container d-flex flex-column flex-md-row justify-content-between text-center">
 
-                    {% if login == False %}
+                    {% if user.is_authenticated == False %}
                         <div class="col-4">
                             <a class="py-2 d-none d-md-inline-block" href="{% url 'signup' %}">Załóż konto</a></div>
                         <div class="col-4">

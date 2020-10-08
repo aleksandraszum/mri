@@ -1,13 +1,16 @@
+import random
 import time
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.db import models
 from django.shortcuts import render
 
 from course.algorithms import last_next_content, push_content, my_reconstruction, generate_k_space_and_x_space_graphs, \
-    defining_links, lesson_progress_check, save_lesson_progress, lesson_complete
-from course.forms import AlgorithmForm, SignUpForm, LoginForm
-from course.models import LessonProgress, Lesson
+    defining_links, lesson_progress_check, save_lesson_progress, lesson_complete, form_save, log_in
+from course.forms import AlgorithmForm, SignUpForm, LoginForm, QuizForm
+from course.models import LessonProgress, Lesson, Quiz
+from random import shuffle
 
 
 def index(request):
@@ -15,50 +18,21 @@ def index(request):
 
 
 def signup(request):
-    if request.user.is_authenticated:
-        user = request.user
-        return render(request, 'index.html', {'user': user, 'login': True})
-    else:
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)
-            communicate = "Zarejestrowałeś się pomyślnie"
-
-            form = LoginForm()
-            return render(request, 'course/login.html',
-                          {'communicate': communicate, 'login': False, 'form': form})
-        return render(request, 'course/signup.html', {'form': form, 'login': False})
+    form = SignUpForm(request.POST)
+    if form.is_valid():
+        user, communicate, form = form_save(form, 'SignUpForm')
+        return render(request, 'course/login.html',
+                      {'user': request.user, 'communicate': communicate, 'form': form})
+    return render(request, 'course/signup.html', {'user': request.user, 'form': form})
 
 
 def login_view(request):
-    if request.user.is_authenticated:
-        user = request.user
-        return render(request, 'index.html', {'user': user, 'login': True})
-    else:
-        if request.method == 'POST':
-            form = LoginForm(request.POST)
-            if form.is_valid():
-                u = form.cleaned_data['username']
-                p = form.cleaned_data['password']
-                user = authenticate(username=u, password=p)
-                if user is not None:
-                    if user.is_active:
-                        login(request, user)
-                        return render(request, 'index.html', {'form': form, 'login': True})
-                    else:
-                        communicate = "Konto jest nieaktywne."
-                        return render(request, 'course/login.html',
-                                      {'form': form, 'communicate': communicate, 'login': False})
-                else:
-                    communicate = "Hasło bądź login są nieprawidłowe."
-                    return render(request, 'course/login.html',
-                                  {'form': form, 'communicate': communicate, 'login': False})
-        else:
-            form = LoginForm()
-            return render(request, 'course/login.html', {'form': form, 'login': False})
+    form = LoginForm(request.POST)
+    if form.is_valid():
+        communicate = log_in(request, form)
+        return render(request, 'course/login.html',
+                      {'user': request.user, 'form': form, 'communicate': communicate})
+    return render(request, 'course/login.html', {'user': request.user, 'form': form})
 
 
 def logout_view(request):
@@ -136,7 +110,7 @@ def spin_echo_base(request):
         links = defining_links(2)
         user_id = request.user.id
         save_lesson_progress(user_id, 2, 0)
-        is_complete = lesson_complete(user_id, 2)
+        is_complete = lesson_complete(user_id, 1)
         if is_complete:
             save_lesson_progress(user_id, 2, 0)
             return render(request, 'course/spin_echo.html',
@@ -181,7 +155,7 @@ def k_space_base(request):
         links = defining_links(3)
         user_id = request.user.id
         save_lesson_progress(user_id, 3, 0)
-        is_complete = lesson_complete(user_id, 3)
+        is_complete = lesson_complete(user_id, 2)
         if is_complete:
             save_lesson_progress(user_id, 3, 0)
             return render(request, 'course/k_space.html',
@@ -270,7 +244,7 @@ def reconstruction_base(request):
     if request.user.is_authenticated:
         user_id = request.user.id
         save_lesson_progress(user_id, 4, 0)
-        is_complete = lesson_complete(user_id, 4)
+        is_complete = lesson_complete(user_id, 3)
         if is_complete:
             save_lesson_progress(user_id, 4, 0)
             return render(request, 'course/reconstruction.html',
@@ -318,7 +292,7 @@ def diffusion_base(request):
     if request.user.is_authenticated:
         user_id = request.user.id
         save_lesson_progress(user_id, 5, 0)
-        is_complete = lesson_complete(user_id, 5)
+        is_complete = lesson_complete(user_id, 4)
         if is_complete:
             save_lesson_progress(user_id, 5, 0)
             return render(request, 'course/diffusion.html',
@@ -337,5 +311,20 @@ def lessons(request):
     return render(request, 'course/lessons.html')
 
 
-def quiz(request):
-    return render(request, 'course/quiz.html')
+def basic_nmr_quiz(request):
+    all_question = list(Quiz.objects.all())
+    x = [i for i in range(15)]
+    shuffle(x)
+    x = x[0:8]
+    asks = []
+    for i in x:
+        asks.append(all_question[i])
+    choice_1 = [
+        ('answer1', asks[0].answer_1),
+        ('answer2', asks[0].answer_2),
+
+    ]
+    print(choice_1)
+
+    form = QuizForm(choice_1)
+    return render(request, 'course/quiz.html', {'asks': asks, 'form': form})

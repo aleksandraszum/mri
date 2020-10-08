@@ -1,12 +1,39 @@
 import os
 import numpy as np
 from math import pi, cos, sin, sqrt
-
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from mat4py import loadmat
 import matplotlib.pyplot as plt
 import pylab
+from course.forms import LoginForm
 from course.models import LessonContent, Lesson, LessonProgress, LessonComplete
+
+
+def form_save(form, formName):
+    if formName == 'SignUpForm':
+        form.save()
+        username = form.cleaned_data.get('username')
+        raw_password = form.cleaned_data.get('password1')
+        user = authenticate(username=username, password=raw_password)
+        communicate = "Zarejestrowałeś się pomyślnie"
+        form = LoginForm()
+        return user, communicate, form
+
+
+def log_in(request, form):
+    u = form.cleaned_data['username']
+    p = form.cleaned_data['password']
+    user = authenticate(username=u, password=p)
+    if user is not None:
+        if user.is_active:
+            login(request, user)
+            communicate = "Zalogowano pomyślnie!"
+        else:
+            communicate = "Konto jest nieaktywne."
+    else:
+        communicate = "Hasło bądź login są nieprawidłowe."
+    return communicate
 
 
 def lesson_progress_check(user_id, lesson_id, part):

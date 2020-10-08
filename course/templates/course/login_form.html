@@ -1,9 +1,7 @@
     <div class="row text-center text-perc">
         <div class="col-sm-12 mx-auto text-center">
         <h2 class="base-color">{{ communicate }}</h2>
-        <br>
         <h1 class="base-color"> Logowanie </h1>
-        <br>
             <form method="post">
                 {% csrf_token %}
                 {% for field in form %}
