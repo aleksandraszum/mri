@@ -134,6 +134,26 @@ def defining_links(lesson_id):
     return links
 
 
+def unable_links(request, lesson_id):
+    links = defining_links(lesson_id)
+    for key in links.keys():
+        if not lesson_progress_check(request.user.id, lesson_id, links[key]):
+            links[key] = None
+    return links
+
+
+def download_data(request, lesson_id, part):
+    css, js, title, content = push_content(lesson_id, part)
+    previous, sequent, p_idx, s_idx = last_next_content(lesson_id, part)
+    links = unable_links(request, lesson_id)
+    if int(part) != 0:
+        previous_part = int(part) - 1
+    else:
+        previous_part = 0
+    progress = lesson_progress_check(request.user, lesson_id, int(previous_part))
+    return css, js, title, content, previous, sequent, p_idx, s_idx, links, progress
+
+
 def sensitivity_map(Mx, My, coils):
     ejex = np.arange(Mx).reshape(1, Mx)
     ejex = ejex + 1

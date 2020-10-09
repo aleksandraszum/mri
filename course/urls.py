@@ -19,5 +19,6 @@ urlpatterns = [
     url(r'^rekonstrukcja_danych/([0-9]+)/$', views.reconstruction, name='reconstruction'),
     url(r'^obrazowanie_dyfuzji/$', views.diffusion_base, name='diffusion_base'),
     url(r'^obrazowanie_dyfuzji/([0-9]+)/$', views.diffusion, name='diffusion'),
+    url(r'^lekcje/$', views.lessons, name='lessons'),
 
 ]
