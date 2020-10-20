@@ -6,8 +6,9 @@ from django.contrib.auth.models import User
 from mat4py import loadmat
 import matplotlib.pyplot as plt
 import pylab
-from course.forms import LoginForm
-from course.models import LessonContent, Lesson, LessonProgress, LessonComplete
+from course.forms import LoginForm, QuizForm
+from course.models import LessonContent, Lesson, LessonProgress, LessonComplete, UserAnswer, Question, Answer
+from random import shuffle
 
 
 def form_save(form, formName):
@@ -65,7 +66,7 @@ def save_lesson_complete(user_id, lesson_id):
     try:
         is_complete = LessonComplete.objects.get(user_id=user_id, lesson_id=lesson_id)
     except LessonComplete.DoesNotExist:
-        previous_lesson = LessonComplete(user_id=User(pk=user_id), lesson_id=Lesson(pk=lesson_id))
+        previous_lesson = LessonComplete(user_id=User(pk=user_id), lesson_id=Lesson(pk=lesson_id), complete=True)
         previous_lesson.save()
 
 
@@ -152,6 +153,92 @@ def download_data(request, lesson_id, part):
         previous_part = 0
     progress = lesson_progress_check(request.user, lesson_id, int(previous_part))
     return css, js, title, content, previous, sequent, p_idx, s_idx, links, progress
+
+
+def answer_get(lesson_id):
+    all_question = Question.objects.filter(lesson_id=1)
+    question_id = []
+    for question in all_question:
+        question_id.append(question.pk)
+    shuffle(question_id)
+    question_id = question_id[0:8]
+    return question_id
+
+
+def last_result_get(request):
+    try:
+        user_result = list(UserAnswer.objects.filter(user_id=User(pk=request.user.pk)))
+        last_result = user_result[-1].result
+    except UserAnswer.DoesNotExist:
+        last_result = False
+    return last_result
+
+
+def result_question_get(request, lesson_id):
+    return last_result_get(request), answer_get(lesson_id)
+
+
+def save_User_Answer(request, question_id):
+    form = QuizForm(question_id, request.POST)
+
+    answer_1 = int(form['answer_1'].value())
+    answer_2 = int(form['answer_2'].value())
+    answer_3 = int(form['answer_3'].value())
+    answer_4 = int(form['answer_4'].value())
+    answer_5 = int(form['answer_5'].value())
+    answer_6 = int(form['answer_6'].value())
+    answer_7 = int(form['answer_7'].value())
+    answer_8 = int(form['answer_8'].value())
+    answer = [answer_1, answer_2, answer_3, answer_4, answer_5, answer_6, answer_7, answer_8]
+
+    question_1 = Answer.objects.get(pk=answer_1).question_id
+    question_2 = Answer.objects.get(pk=answer_2).question_id
+    question_3 = Answer.objects.get(pk=answer_3).question_id
+    question_4 = Answer.objects.get(pk=answer_4).question_id
+    question_5 = Answer.objects.get(pk=answer_5).question_id
+    question_6 = Answer.objects.get(pk=answer_6).question_id
+    question_7 = Answer.objects.get(pk=answer_7).question_id
+    question_8 = Answer.objects.get(pk=answer_8).question_id
+
+    true_answer = 0
+
+    for a in answer:
+        if Answer.objects.get(pk=a).is_true:
+            true_answer = true_answer + 1
+
+    result = (true_answer / 8.0) * 100
+
+    user_answer = UserAnswer(user=User(request.user.pk),
+                             answer_1_id=Answer.objects.get(pk=answer_1),
+                             answer_2_id=Answer.objects.get(pk=answer_2),
+                             answer_3_id=Answer.objects.get(pk=answer_3),
+                             answer_4_id=Answer.objects.get(pk=answer_4),
+                             answer_5_id=Answer.objects.get(pk=answer_5),
+                             answer_6_id=Answer.objects.get(pk=answer_6),
+                             answer_7_id=Answer.objects.get(pk=answer_7),
+                             answer_8_id=Answer.objects.get(pk=answer_8),
+
+                             question_1_id=Question.objects.get(pk=question_1.pk),
+                             question_2_id=Question.objects.get(pk=question_2.pk),
+                             question_3_id=Question.objects.get(pk=question_3.pk),
+                             question_4_id=Question.objects.get(pk=question_4.pk),
+                             question_5_id=Question.objects.get(pk=question_5.pk),
+                             question_6_id=Question.objects.get(pk=question_6.pk),
+                             question_7_id=Question.objects.get(pk=question_7.pk),
+                             question_8_id=Question.objects.get(pk=question_8.pk),
+
+                             lesson=Lesson.objects.get(number_of_lesson=1), result=result)
+    user_answer.save()
+    if result > 0.9:
+        communicate = "Zaliczyłeś moduł bardzo dobrze!\nMożesz przejść do kolejnej lekcji"
+        save_lesson_complete(request.user.pk, 1)
+        complete = True
+
+    else:
+        communicate = "Słabo Ci poszło!\nPowtórz materiał jeszcze raz albo spróbuj ponownie rozwiązać test wiedzy"
+        complete = False
+
+    return result, complete, communicate
 
 
 def sensitivity_map(Mx, My, coils):

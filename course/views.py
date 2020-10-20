@@ -4,12 +4,14 @@ import time
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.db import models
+from django.forms import formset_factory
 from django.shortcuts import render
 
 from course.algorithms import last_next_content, push_content, my_reconstruction, generate_k_space_and_x_space_graphs, \
-    defining_links, lesson_progress_check, save_lesson_progress, lesson_complete, form_save, log_in, download_data
+    defining_links, lesson_progress_check, save_lesson_progress, lesson_complete, form_save, log_in, download_data, \
+    save_lesson_complete, result_question_get, save_User_Answer
 from course.forms import AlgorithmForm, SignUpForm, LoginForm, QuizForm
-from course.models import LessonProgress, Lesson, Quiz
+from course.models import LessonProgress, Lesson, Question, Answer, UserAnswer
 from random import shuffle
 
 
@@ -50,6 +52,7 @@ def basic_nmr(request, part):
                       {'user': request.user, 'communicate': communicate})
     if progress:
         save_lesson_progress(request.user.id, 1, int(part))
+
     return render(request, 'course/baseNMR.html',
                   {'css': css, 'js': js, 'title': title, 'text': content, 'previous': previous,
                    'sequent': sequent,
@@ -67,6 +70,35 @@ def basic_nmr_base(request):
     css, js, title, content, previous, sequent, p_idx, s_idx, links, progress = download_data(request, 1, 0)
     return render(request, 'course/baseNMR.html',
                   {'text': content, 'links': links, 'title': title, 'sequent': True, 's_idx': 1, 'user': request.user,
+                   'progress': progress})
+
+
+def basic_nmr_quiz(request):
+    try:
+        css, js, title, content, previous, sequent, p_idx, s_idx, links, progress = download_data(request, 1, 5)
+    except TypeError:
+        communicate = "Dostęp tylko dla zalogowanych!"
+        return render(request, 'course/baseNMR.html',
+                      {'user': request.user, 'communicate': communicate})
+    if progress:
+        last_result, question_id = result_question_get(request, 1)
+        form = QuizForm(question_id)
+
+        if request.method == 'POST':
+            result, complete, communicate = save_User_Answer(request, question_id)
+
+            return render(request, 'course/after_quiz.html',
+                          {'css': css, 'js': js, 'title': title, 'text': content, 'links': links, 'user': request.user,
+                           'progress': progress, 'result': result, 'communicate': communicate, 'complete': complete})
+
+        return render(request, 'course/quiz.html',
+                      {'css': css, 'js': js, 'title': title, 'text': content, 'previous': previous,
+                       'sequent': sequent, 'p_idx': p_idx, 's_idx': s_idx, 'links': links, 'user': request.user,
+                       'progress': progress, 'form': form, 'last_result': last_result})
+
+    return render(request, 'course/quiz.html',
+                  {'css': css, 'js': js, 'title': title, 'text': content, 'previous': previous,
+                   'sequent': sequent,'p_idx': p_idx, 's_idx': s_idx, 'links': links, 'user': request.user,
                    'progress': progress})
 
 
@@ -300,22 +332,3 @@ def diffusion_base(request):
 
 def lessons(request):
     return render(request, 'course/lessons.html')
-
-
-def basic_nmr_quiz(request):
-    all_question = list(Quiz.objects.all())
-    x = [i for i in range(15)]
-    shuffle(x)
-    x = x[0:8]
-    asks = []
-    for i in x:
-        asks.append(all_question[i])
-    choice_1 = [
-        ('answer1', asks[0].answer_1),
-        ('answer2', asks[0].answer_2),
-
-    ]
-    print(choice_1)
-
-    form = QuizForm(choice_1)
-    return render(request, 'course/quiz.html', {'asks': asks, 'form': form})

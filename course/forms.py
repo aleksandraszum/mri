@@ -2,7 +2,8 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-from course.models import Quiz
+# from course.models import  Answer, Question
+from course.models import Question, Answer
 
 
 class SignUpForm(UserCreationForm):
@@ -33,19 +34,46 @@ class AlgorithmForm(forms.Form):
 
 
 class QuizForm(forms.Form):
-    # answer_1 = forms.MultipleChoiceField()
-    # answer_2 = forms.CharField(max_length=200)
-    # answer_3 = forms.CharField(max_length=200)
-    # answer_4 = forms.CharField(max_length=200)
+    answer_1 = forms.ChoiceField(required=True, widget=forms.RadioSelect(), label=None)
+    answer_2 = forms.ChoiceField(required=True, widget=forms.RadioSelect(), label=None)
+    answer_3 = forms.ChoiceField(required=True, widget=forms.RadioSelect(), label=None)
+    answer_4 = forms.ChoiceField(required=True, widget=forms.RadioSelect(), label=None)
+    answer_5 = forms.ChoiceField(required=True, widget=forms.RadioSelect(), label=None)
+    answer_6 = forms.ChoiceField(required=True, widget=forms.RadioSelect(), label=None)
+    answer_7 = forms.ChoiceField(required=True, widget=forms.RadioSelect(), label=None)
+    answer_8 = forms.ChoiceField(required=True, widget=forms.RadioSelect(), label=None)
 
-    # class Meta:
-    #     model = Quiz
-    #     fields = ('answer_1', 'answer_2', 'answer_3', 'answer_4')
-
-    def __init__(self, Quiz_object):
-        super(QuizForm, self).__init__()
-        answer_1 = forms.MultipleChoiceField(
-            required=False,
-            widget=forms.CheckboxSelectMultiple,
-            choices=Quiz_object,
-        )
+    def __init__(self, question=None, *args, **kwargs):
+        super(QuizForm, self).__init__(*args, **kwargs)
+        self.fields['answer_1'].choices = [(a.pk, a.answer) for a in
+                                           Answer.objects.filter(question_id=question[0])]
+        if self.fields['answer_1'].label is None:
+            self.fields['answer_1'].label = Question.objects.get(pk=question[0]).question
+        self.fields['answer_2'].choices = [(a.pk, a.answer) for a in
+                                           Answer.objects.filter(question_id=question[1])]
+        if self.fields['answer_2'].label is None:
+            self.fields['answer_2'].label = Question.objects.get(pk=question[1]).question
+        self.fields['answer_3'].choices = [(a.pk, a.answer) for a in
+                                           Answer.objects.filter(question_id=question[2])]
+        if self.fields['answer_3'].label is None:
+            self.fields['answer_3'].label = Question.objects.get(pk=question[2]).question
+        self.fields['answer_4'].choices = [(a.pk, a.answer) for a in
+                                           Answer.objects.filter(question_id=question[3])]
+        if self.fields['answer_4'].label is None:
+            self.fields['answer_4'].label = Question.objects.get(pk=question[3]).question
+        self.fields['answer_5'].choices = [(a.pk, a.answer) for a in
+                                           Answer.objects.filter(question_id=question[4])]
+        if self.fields['answer_5'].label is None:
+            self.fields['answer_5'].label = Question.objects.get(pk=question[4]).question
+        self.fields['answer_6'].choices = [(a.pk, a.answer) for a in
+                                           Answer.objects.filter(question_id=question[5])]
+        if self.fields['answer_6'].label is None:
+            self.fields['answer_6'].label = Question.objects.get(pk=question[5]).question
+        self.fields['answer_7'].choices = [(a.pk, a.answer) for a in
+                                           Answer.objects.filter(question_id=question[6])]
+        if self.fields['answer_7'].label is None:
+            self.fields['answer_7'].label = Question.objects.get(pk=question[6]).question
+        self.fields['answer_8'].choices = [(a.pk, a.answer) for a in
+                                           Answer.objects.filter(question_id=question[7])]
+        if self.fields['answer_8'].label is None:
+            self.fields['answer_8'].label = Question.objects.get(pk=question[7]).question
