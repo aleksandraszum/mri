@@ -32,8 +32,8 @@
                     <p>Twój wynik: {{ result }}%!</p>
                     <p>{{ communicate }}</p>
 
-                    {% if complete %}
-                        <a href="../../spin_echo">
+                    {% if next_lesson %}
+                        <a href="../../{{ next_lesson }}">
                             <button type="submit" class="btn btn-lg btn-secondary">Lekcja 2</button>
                         </a>
                     {% endif %}

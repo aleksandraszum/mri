@@ -89,7 +89,8 @@ def basic_nmr_quiz(request):
 
             return render(request, 'course/after_quiz.html',
                           {'css': css, 'js': js, 'title': title, 'text': content, 'links': links, 'user': request.user,
-                           'progress': progress, 'result': result, 'communicate': communicate, 'complete': complete})
+                           'progress': progress, 'result': result, 'communicate': communicate, 'complete': complete,
+                           'next_lesson': 'spin_echo'})
 
         return render(request, 'course/quiz.html',
                       {'css': css, 'js': js, 'title': title, 'text': content, 'previous': previous,
