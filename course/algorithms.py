@@ -1,4 +1,6 @@
 import os
+import time
+
 import numpy as np
 from math import pi, cos, sin, sqrt
 from django.contrib.auth import authenticate, login
@@ -6,7 +8,7 @@ from django.contrib.auth.models import User
 from mat4py import loadmat
 import matplotlib.pyplot as plt
 import pylab
-from course.forms import LoginForm, QuizForm
+from course.forms import LoginForm, QuizForm, AlgorithmForm
 from course.models import LessonContent, Lesson, LessonProgress, LessonComplete, UserAnswer, Question, Answer
 from random import shuffle
 
@@ -565,3 +567,29 @@ def generate_k_space_and_x_space_graphs(date, ML, coils, SN, reconstruction):
         plt.close()
 
     return filenameX, filename
+
+
+def image_get(request):
+    form = AlgorithmForm(request.POST)
+    coils = int(form['coils'].value())
+    sigma = float(form['sigma'].value())
+    correlation = float(form['correlation'].value())
+    reconstruction = int(form['reconstruction'].value())
+
+    if coils == 1:
+        correlation = 0
+        reconstruction = 0
+        name_reconstruction = 'Metoda SoS dla obrazowania jednokanałowego'
+    else:
+        if reconstruction == 0:
+            reconstruction = 1
+            name_reconstruction = 'Metoda SoS dla obrazowania wielokanałowego'
+
+        else:
+            reconstruction = 2
+            name_reconstruction = 'Metoda SENSE'
+    SN, S0, ML0, ML = my_reconstruction(coils, sigma,
+                                        correlation, reconstruction)
+    date = time.time()
+    filenameX, filename = generate_k_space_and_x_space_graphs(date, ML, coils, SN, reconstruction)
+    return filenameX, filename, coils, sigma, name_reconstruction
