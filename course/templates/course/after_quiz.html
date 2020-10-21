@@ -32,9 +32,13 @@
                     <p>Twój wynik: {{ result }}%!</p>
                     <p>{{ communicate }}</p>
 
-                    {% if next_lesson %}
+                    {% if complete %}
                         <a href="../../{{ next_lesson }}">
-                            <button type="submit" class="btn btn-lg btn-secondary">Lekcja 2</button>
+                            <button type="submit" class="btn btn-lg btn-secondary"> Następna lekcja</button>
+                        </a>
+                    {% else %}
+                        <a href="../quiz">
+                            <button type="submit" class="btn btn-lg btn-secondary">Rozwiąż test wiedzy ponownie</button>
                         </a>
                     {% endif %}
 

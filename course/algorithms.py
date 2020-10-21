@@ -108,12 +108,11 @@ def defining_links(lesson_id):
                  'Symulator - wpływ impulsu na wektor magnetyzacji': '4', 'Słowniczek i bibliografia': '5'}
     if lesson_id == 2:
         links = {'Wpływ impulsu RF na wektor magnetyzacji': '1', 'Zjawisko relaksacji': '2', 'Sekwencja spin-echo': '3',
-                 'Diagram przedstawiający sekwencję spin-echo': '4',
-                 'Animacja przedstawiająca sekwencję spin-echo': '5',
-                 'Wykorzystanie echa spinowego w MRI': '6',
-                 'Przedstawienie obrazu mózgu z wykorzystaniem różnych wartości parametrów TE oraz TR': 7,
-                 'Obrazy T1-, T2- i PD-zależne': '8', 'Symulator - wybierz czas TR oraz TE': '9',
-                 'Zalety i wady echa spinowego': '10', 'Słowniczek i bibliografia': '11'}
+                 'Diagram oraz animacja przedstawiający sekwencję spin-echo': '4',
+                 'Wykorzystanie echa spinowego w MRI': '5',
+                 'Przedstawienie obrazu mózgu z wykorzystaniem różnych wartości parametrów TE oraz TR oraz symulator': '6',
+                 'Obrazy T1-, T2- i PD-zależne': '7', 'Zalety i wady echa spinowego': '8',
+                 'Słowniczek i bibliografia': '9'}
     if lesson_id == 3:
         links = {'Przestrzeń k': '1', 'Przestrzenie danych i kroki przetwarzania': '2',
                  'Schemat - przestrzeń k oraz x': '3', 'Symulator - próbkowanie sygnału': '4',
@@ -152,11 +151,13 @@ def download_data(request, lesson_id, part):
     else:
         previous_part = 0
     progress = lesson_progress_check(request.user, lesson_id, int(previous_part))
+    if part == 0:
+        progress = True
     return css, js, title, content, previous, sequent, p_idx, s_idx, links, progress
 
 
-def answer_get(lesson_id):
-    all_question = Question.objects.filter(lesson_id=1)
+def question_get(lesson_id):
+    all_question = Question.objects.filter(lesson_id=lesson_id)
     question_id = []
     for question in all_question:
         question_id.append(question.pk)
@@ -165,20 +166,17 @@ def answer_get(lesson_id):
     return question_id
 
 
-def last_result_get(request):
+def last_result_get(request, lesson_number):
     try:
-        user_result = list(UserAnswer.objects.filter(user_id=User(pk=request.user.pk)))
+        user_result = list(UserAnswer.objects.filter(user_id=User(pk=request.user.pk),
+                                                     lesson=Lesson.objects.get(number_of_lesson=lesson_number)))
         last_result = user_result[-1].result
     except UserAnswer.DoesNotExist:
         last_result = False
     return last_result
 
 
-def result_question_get(request, lesson_id):
-    return last_result_get(request), answer_get(lesson_id)
-
-
-def save_User_Answer(request, question_id):
+def save_User_Answer(request, question_id, lesson_id):
     form = QuizForm(question_id, request.POST)
 
     answer_1 = int(form['answer_1'].value())
@@ -229,9 +227,9 @@ def save_User_Answer(request, question_id):
 
                              lesson=Lesson.objects.get(number_of_lesson=1), result=result)
     user_answer.save()
-    if result > 0.9:
+    if result > 90:
         communicate = "Zaliczyłeś moduł bardzo dobrze!\nMożesz przejść do kolejnej lekcji"
-        save_lesson_complete(request.user.pk, 1)
+        save_lesson_complete(request.user.pk, lesson_id)
         complete = True
 
     else:
