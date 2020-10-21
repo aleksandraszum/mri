@@ -16,6 +16,7 @@ urlpatterns = [
     url(r'^spin_echo/quiz/$', views.spin_echo_quiz, name='spin_echo_quiz'),
     url(r'^dane_w_przestrzeni_k/$', views.k_space_base, name='k_space_base'),
     url(r'^dane_w_przestrzeni_k/([0-9]+)/$', views.k_space, name='k_space'),
+    url(r'^dane_w_przestrzeni_k/quiz$', views.k_space_quiz, name='k_space_quiz'),
     url(r'^rekonstrukcja_danych/$', views.reconstruction_base, name='reconstruction_base'),
     url(r'^rekonstrukcja_danych/([0-9]+)/$', views.reconstruction, name='reconstruction'),
     url(r'^obrazowanie_dyfuzji/$', views.diffusion_base, name='diffusion_base'),

@@ -54,7 +54,7 @@ class Answer(models.Model):
     is_true = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.question_id} - {self.answer}"
+        return f"{self.question_id} - {self.answer} - {self.is_true}"
 
 
 class UserAnswer(models.Model):
