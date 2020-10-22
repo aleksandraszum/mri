@@ -322,52 +322,73 @@ def reconstruction_quiz(request):
                    'progress': progress})
 
 
-def diffusion(request, part):
-    css, js, title, content = push_content(5, part)
-    previous, sequent, p_idx, s_idx = last_next_content(5, part)
-
-    links = defining_links(5)
-    if request.user.is_authenticated:
-        user = request.user
-        user_id = user.id
-        previous_part = int(part) - 1
-        progress = lesson_progress_check(user, 5, int(previous_part))
-
-        if progress:
-            save_lesson_progress(user_id, 5, int(part))
-            return render(request, 'course/diffusion.html',
-                          {'css': css, 'js': js, 'title': title, 'text': content, 'previous': previous,
-                           'sequent': sequent,
-                           'p_idx': p_idx, 's_idx': s_idx, 'links': links, 'part': part, 'login': True})
-        else:
-            communicate = "Nie masz jeszcze dostępu do tej części kursu"
-            return render(request, 'course/diffusion.html',
-                          {'css': css, 'js': js, 'title': title, 'communicate': communicate, 'login': True})
-    else:
-        communicate = "Dostęp tylko dla zalogowanych!"
-        form = LoginForm()
-        return render(request, 'course/diffusion.html', {'login': False, 'communicate': communicate, 'title': title})
-
-
 def diffusion_base(request):
-    css, js, title, content = push_content(5, 0)
-    links = defining_links(5)
-    if request.user.is_authenticated:
-        user_id = request.user.id
-        save_lesson_progress(user_id, 5, 0)
-        is_complete = lesson_complete(user_id, 4)
-        if is_complete:
-            save_lesson_progress(user_id, 5, 0)
-            return render(request, 'course/diffusion.html',
-                          {'text': content, 'links': links, 'title': title, 'sequent': True, 's_idx': 1, 'login': True})
-        else:
-            communicate = "Nie masz jeszcze dostępu do tej części kursu"
-            return render(request, 'course/diffusion.html',
-                          {'css': css, 'js': js, 'title': title, 'communicate': communicate, 'login': True})
-    else:
+    try:
+        css, js, title, content, previous, sequent, p_idx, s_idx, links, progress = download_data(request, 5, 0)
+    except TypeError:
         communicate = "Dostęp tylko dla zalogowanych!"
-        form = LoginForm()
-        return render(request, 'course/diffusion.html', {'login': False, 'communicate': communicate, 'title': title})
+        return render(request, 'course/diffusion.html',
+                      {'communicate': communicate, 'user': request.user})
+    is_complete = lesson_complete(request.user.id, 4)
+    if is_complete:
+        save_lesson_progress(request.user.id, 5, 0)
+        return render(request, 'course/diffusion.html',
+                      {'text': content, 'links': links, 'title': title, 'sequent': True, 's_idx': 1,
+                       'user': request.user, 'progress': True})
+    return render(request, 'course/diffusion.html',
+                  {'css': css, 'js': js, 'title': title, 'user': request.user})
+
+
+def diffusion(request, part):
+    try:
+        css, js, title, content, previous, sequent, p_idx, s_idx, links, progress = download_data(request, 5, part)
+    except TypeError:
+        communicate = "Dostęp tylko dla zalogowanych!"
+        return render(request, 'course/diffusion.html',
+                      {'user': request.user, 'communicate': communicate})
+    if progress:
+        save_lesson_progress(request.user.id, 5, int(part))
+
+    return render(request, 'course/diffusion.html',
+                  {'css': css, 'js': js, 'title': title, 'text': content, 'previous': previous,
+                   'sequent': sequent,
+                   'p_idx': p_idx, 's_idx': s_idx, 'links': links, 'part': part, 'user': request.user,
+                   'progress': progress})
+
+
+def diffusion_quiz(request):
+    try:
+        css, js, title, content, previous, sequent, p_idx, s_idx, links, progress = download_data(request, 5, 8)
+    except TypeError:
+        communicate = "Dostęp tylko dla zalogowanych!"
+        return render(request, 'course/baseNMR.html',
+                      {'user': request.user, 'communicate': communicate})
+    if progress:
+        try:
+            last_result = last_result_get(request, 5)
+        except IndexError:
+            last_result = False
+
+        question_id = question_get(5)
+        form = QuizForm(question_id)
+
+        if request.method == 'POST':
+            result, complete, communicate = save_User_Answer(request, question_id, 5)
+
+            return render(request, 'course/after_quiz.html',
+                          {'css': css, 'js': js, 'title': title, 'text': content, 'links': links, 'user': request.user,
+                           'progress': progress, 'result': result, 'communicate': communicate, 'complete': complete,
+                           'lesson': 5})
+
+        return render(request, 'course/quiz.html',
+                      {'css': css, 'js': js, 'title': title, 'text': content, 'previous': previous,
+                       'sequent': sequent, 'p_idx': p_idx, 's_idx': s_idx, 'links': links, 'user': request.user,
+                       'progress': progress, 'form': form, 'last_result': last_result})
+
+    return render(request, 'course/quiz.html',
+                  {'css': css, 'js': js, 'title': title, 'text': content, 'previous': previous,
+                   'sequent': sequent, 'p_idx': p_idx, 's_idx': s_idx, 'links': links, 'user': request.user,
+                   'progress': progress})
 
 
 def lessons(request):
