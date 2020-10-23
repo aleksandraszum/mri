@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-3 text-justify">
+        </div>
+        <div class="col-6 text-justify">
+            <H1 class="base-color text-center">Profil {{ profile.user }}</H1>
+            <p>Data założenia konta: {{ profile.sign_up_date|date:"d.m.yy" }} </p>
+            <p>Twoje lekcje:</p>
+            <ol class="menu-links font-weight-bold">
+                {% for key, value in titles.items %}
+                    {% if value == None %}
+                        <li color="dark-gray">{{ key }}</li>
+                    {% else %}
+                        <li><a class="base-color" href="../{{ value }}">{{ key }}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ol>
+
+            <p>Twoje testy wiedzy:</p>
+            <ol class="menu-links font-weight-bold">
+                {% for key, value in quiz.items %}
+                    {% if value == None %}
+                        <li color="dark-gray">{{ key }}</li>
+                    {% else %}
+                        <li><a class="base-color" href="../{{ value }}">{{ key }}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ol>
+
+
+        </div>
+        <div class="col-3 text-justify">
+        </div>
+
+    </div>
+{% endblock %}

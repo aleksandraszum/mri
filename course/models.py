@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
-from datetime import datetime
+from datetime import datetime, date
 
 
 class Lesson(models.Model):
@@ -84,3 +84,9 @@ class UserAnswer(models.Model):
         return f"{self.user} - {self.time}"
 
 
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    sign_up_date = models.DateField(null=True, blank=True, default=datetime.now)
+
+    def __str__(self):
+        return f"{self.user}"

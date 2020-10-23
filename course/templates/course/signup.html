@@ -12,18 +12,25 @@
             {% if user.is_authenticated %}
                 {% include 'course/lesson_view.html' %}
             {% else %}
-                <h1 class="base-color"> Zakładanie konta </h1>
-                <br>
-                <form method="post">
-                    {% csrf_token %}
-                    {% for field in form %}
-                        <h3>
-                            {{ field.label_tag }}<br>
-                            {{ field }}<br>
-                        </h3>
-                    {% endfor %}<br>
-                    <button type="submit" class="btn btn-lg btn-secondary">Załóż konto</button>
-                </form>
+                {% if communicate %}
+                    <p>{{ communicate }}</p>
+                    <a href="{% url 'login_view' %}">
+                        <button type="submit" class="btn btn-lg btn-secondary">Zaloguj się</button>
+                    </a>
+                {% else %}
+                    <h1 class="base-color"> Zakładanie konta </h1>
+                    <br>
+                    <form method="post">
+                        {% csrf_token %}
+                        {% for field in form %}
+                            <h3>
+                                {{ field.label_tag }}<br>
+                                {{ field }}<br>
+                            </h3>
+                        {% endfor %}<br>
+                        <button type="submit" class="btn btn-lg btn-secondary">Załóż konto</button>
+                    </form>
+                {% endif %}
             {% endif %}
         </div>
     </div>

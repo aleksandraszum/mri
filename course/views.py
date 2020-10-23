@@ -9,9 +9,10 @@ from django.shortcuts import render
 
 from course.algorithms import last_next_content, push_content, my_reconstruction, generate_k_space_and_x_space_graphs, \
     defining_links, lesson_progress_check, save_lesson_progress, lesson_complete, form_save, log_in, download_data, \
-    save_lesson_complete, save_User_Answer, last_result_get, question_get, image_get
+    save_lesson_complete, save_User_Answer, last_result_get, question_get, image_get, lesson_progress_get, unable_title, \
+    lesson_complete_check, unable_quiz
 from course.forms import AlgorithmForm, SignUpForm, LoginForm, QuizForm
-from course.models import LessonProgress, Lesson, Question, Answer, UserAnswer
+from course.models import LessonProgress, Lesson, Question, Answer, UserAnswer, Profile, LessonComplete
 from random import shuffle
 
 
@@ -23,7 +24,7 @@ def signup(request):
     form = SignUpForm(request.POST)
     if form.is_valid():
         user, communicate, form = form_save(form, 'SignUpForm')
-        return render(request, 'course/login.html',
+        return render(request, 'course/signup.html',
                       {'user': request.user, 'communicate': communicate, 'form': form})
     return render(request, 'course/signup.html', {'user': request.user, 'form': form})
 
@@ -393,3 +394,25 @@ def diffusion_quiz(request):
 
 def lessons(request):
     return render(request, 'course/lessons.html')
+
+
+def profile(request):
+    try:
+        profile = Profile.objects.get(user=request.user.id)
+    except Profile.DoesNotExist:
+        communicate = "Dostęp tylko dla zalogowanych!"
+        return render(request, 'index.html', {'communicate': communicate})
+
+    complete = [True, True, True, True, True]
+
+    for i in range(1, 6):
+        try:
+            lesson = LessonComplete.objects.get(user_id=User(pk=request.user.pk), lesson_id=Lesson(number_of_lesson=i))
+        except LessonComplete.DoesNotExist:
+            complete[i - 1] = False
+
+    titles = unable_title(request)
+    quiz = unable_quiz(request)
+
+    return render(request, 'course/profile.html',
+                  {'profile': profile, 'complete': complete, 'titles': titles, 'quiz': quiz})

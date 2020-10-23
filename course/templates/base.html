@@ -38,9 +38,9 @@
 
                     {% else %}
                         <div class="col-4">
-                            <a class="py-2 d-none d-md-inline-block" href="#">Profil</a></div>
+                            <a class="py-2 d-none d-md-inline-block" href="{% url 'profile' %}">Profil</a></div>
                         <div class="col-4">
-                            <a class="py-2 d-none d-md-inline-block" href="#">Lekcje</a></div>
+                            <a class="py-2 d-none d-md-inline-block" href="{% url 'lessons' %}">Lekcje</a></div>
                         <div class="col-4">
                             <a class="py-2 d-none d-md-inline-block" href="{% url 'logout_view' %}">Wyloguj się</a></div>
                     {% endif %}

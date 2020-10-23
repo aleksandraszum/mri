@@ -9,7 +9,7 @@ from mat4py import loadmat
 import matplotlib.pyplot as plt
 import pylab
 from course.forms import LoginForm, QuizForm, AlgorithmForm
-from course.models import LessonContent, Lesson, LessonProgress, LessonComplete, UserAnswer, Question, Answer
+from course.models import LessonContent, Lesson, LessonProgress, LessonComplete, UserAnswer, Question, Answer, Profile
 from random import shuffle
 
 
@@ -19,6 +19,8 @@ def form_save(form, formName):
         username = form.cleaned_data.get('username')
         raw_password = form.cleaned_data.get('password1')
         user = authenticate(username=username, password=raw_password)
+        profile = Profile(user=User(pk=user.pk))
+        profile.save()
         communicate = "Zarejestrowałeś się pomyślnie"
         form = LoginForm()
         return user, communicate, form
@@ -44,6 +46,25 @@ def lesson_progress_check(user_id, lesson_id, part):
     try:
         previous_lesson = LessonProgress.objects.get(user_id=user_id, lesson_id=lesson_id, part=part)
     except LessonProgress.DoesNotExist:
+        previous = False
+    return previous
+
+
+def lesson_complete_check(user_id, lesson_id):
+    previous = True
+    try:
+        previous_lesson = LessonComplete.objects.get(user_id=user_id, lesson_id=lesson_id)
+    except LessonComplete.DoesNotExist:
+        previous = False
+    return previous
+
+
+def lesson_complete_check_title(user_id, title):
+    previous = True
+    try:
+        previous_lesson = LessonComplete.objects.get(user_id=user_id,
+                                                     lesson_id=Lesson.objects.get(title=title).number_of_lesson)
+    except LessonComplete.DoesNotExist:
         previous = False
     return previous
 
@@ -593,3 +614,72 @@ def image_get(request):
     date = time.time()
     filenameX, filename = generate_k_space_and_x_space_graphs(date, ML, coils, SN, reconstruction)
     return filenameX, filename, coils, sigma, name_reconstruction
+
+
+def lesson_progress_get(request):
+    lesson_1 = False
+    lesson_2 = False
+    lesson_3 = False
+    lesson_4 = False
+    lesson_5 = False
+
+    try:
+        lesson_1 = LessonComplete(user_id=User(pk=request.user.pk), lesson_id=Lesson(number_of_lesson=1))
+    except LessonComplete.DoesNotExist:
+        try:
+            lesson_1 = LessonProgress(user_id=User(pk=request.user.pk), lesson_id=Lesson(number_of_lesson=1), part=5)
+        except LessonProgress.DoesNotExist:
+            try:
+                lesson_1 = LessonProgress(user_id=User(pk=request.user.pk), lesson_id=Lesson(number_of_lesson=1),
+                                          part=4)
+            except LessonProgress.DoesNotExist:
+                try:
+                    lesson_1 = LessonProgress(user_id=User(pk=request.user.pk), lesson_id=Lesson(number_of_lesson=1),
+                                              part=3)
+                except LessonProgress.DoesNotExist:
+                    try:
+                        lesson_1 = LessonProgress(user_id=User(pk=request.user.pk).pk,
+                                                  lesson_id=Lesson(number_of_lesson=1), part=2)
+                    except LessonProgress.DoesNotExist:
+                        try:
+                            lesson_1 = LessonProgress(user_id=User(pk=request.user.pk),
+                                                      lesson_id=Lesson(number_of_lesson=1), part=1)
+                        except LessonProgress.DoesNotExist:
+                            pass
+        print(lesson_1, lesson_2, lesson_3, lesson_4, lesson_5)
+        return lesson_1, lesson_2, lesson_3, lesson_4, lesson_5
+
+
+def unable_title(request):
+    titles = {
+        'Podstawy fizyczne rezonansu magnetycznego': 'podstawy_nmr',
+        'Sekwencja spin-echo': 'spin_echo',
+        'Dane w przestrzeni k': 'dane_w_przestrzeni_k',
+        'Rekonstrukcja danych': 'rekonstrukcja_danych',
+        'Obrazowanie dyfuzji': 'obrazowanie_dyfuzji'
+    }
+    for key in titles.keys():
+        if not lesson_complete_check_title(request.user.id, title=key):
+            if key != 'Podstawy fizyczne rezonansu magnetycznego':
+                titles[key] = None
+
+    return titles
+
+
+def unable_quiz(request):
+    titles = {
+        'Podstawy fizyczne rezonansu magnetycznego': 'podstawy_nmr/quiz',
+        'Sekwencja spin-echo': 'spin_echo/quiz',
+        'Dane w przestrzeni k': 'dane_w_przestrzeni_k/quiz',
+        'Rekonstrukcja danych': 'rekonstrukcja_danych/quiz',
+        'Obrazowanie dyfuzji': 'obrazowanie_dyfuzji/quiz'
+    }
+    part = [5, 9, 8, 8, 8]
+    i = 0
+    for key in titles.keys():
+        if not lesson_progress_check(request.user.id, lesson_id=Lesson.objects.get(title=key).number_of_lesson,
+                                     part=part[i]):
+            titles[key] = None
+        i = i + 1
+
+    return titles
