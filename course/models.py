@@ -17,6 +17,8 @@ class LessonContent(models.Model):
     lesson_id = models.ForeignKey('Lesson', on_delete=models.CASCADE)
     part_of_the_lesson = models.PositiveIntegerField()
     content = models.TextField()
+    date = models.DateField(null=True, blank=True, default=datetime.now)
+
 
     def __str__(self):
         return f" {self.lesson_id} - Part of the Lesson: {self.part_of_the_lesson}"
@@ -26,6 +28,7 @@ class LessonProgress(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     lesson_id = models.ForeignKey('Lesson', on_delete=models.CASCADE, default=None)
     part = models.IntegerField(default=None)
+    date = models.DateField(null=True, blank=True, default=datetime.now)
 
     def __str__(self):
         return f"User: {self.user_id} - lesson: {self.lesson_id} - content: {self.part}"
