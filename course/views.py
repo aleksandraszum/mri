@@ -10,7 +10,7 @@ from django.shortcuts import render
 from course.algorithms import last_next_content, push_content, my_reconstruction, generate_k_space_and_x_space_graphs, \
     defining_links, lesson_progress_check, save_lesson_progress, lesson_complete, form_save, log_in, download_data, \
     save_lesson_complete, save_User_Answer, last_result_get, question_get, image_get, lesson_progress_get, unable_title, \
-    lesson_complete_check, unable_quiz, unable_links
+    lesson_complete_check, unable_quiz, unable_links, get_profile_details, get_lesson_details, get_quiz_details_base
 from course.forms import AlgorithmForm, SignUpForm, LoginForm, QuizForm
 from course.models import LessonProgress, Lesson, Question, Answer, UserAnswer, Profile, LessonComplete
 from random import shuffle
@@ -393,21 +393,18 @@ def diffusion_quiz(request):
 
 
 def lessons(request):
-    lesson_1 = unable_links(request, 1)
-    lesson_2 = unable_links(request, 2)
-    lesson_3 = unable_links(request, 3)
-    lesson_4 = unable_links(request, 4)
-    lesson_5 = unable_links(request, 5)
-    title_1 = Lesson.objects.get(number_of_lesson=1).title
-    title_2 = Lesson.objects.get(number_of_lesson=2).title
-    title_3 = Lesson.objects.get(number_of_lesson=3).title
-    title_4 = Lesson.objects.get(number_of_lesson=4).title
-    title_5 = Lesson.objects.get(number_of_lesson=5).title
+    try:
+        profile = Profile.objects.get(user=request.user.id)
+    except Profile.DoesNotExist:
+        communicate = "Dostęp tylko dla zalogowanych!"
+        return render(request, 'index.html', {'communicate': communicate})
 
+    lesson_1, lesson_2, lesson_3, lesson_4, lesson_5, title_1, title_2, title_3, title_4, title_5 = get_lesson_details(
+        request)
     return render(request, 'course/lessons.html',
                   {'lesson_1': lesson_1, 'lesson_2': lesson_2, 'lesson_4': lesson_4, 'lesson_3': lesson_3,
                    'lesson_5': lesson_5, 'title_1': title_1, 'title_2': title_2, 'title_3': title_3, 'title_4': title_4,
-                   'title_5': title_5 })
+                   'title_5': title_5})
 
 
 def profile(request):
@@ -417,16 +414,34 @@ def profile(request):
         communicate = "Dostęp tylko dla zalogowanych!"
         return render(request, 'index.html', {'communicate': communicate})
 
-    complete = [True, True, True, True, True]
-
-    for i in range(1, 6):
-        try:
-            lesson = LessonComplete.objects.get(user_id=User(pk=request.user.pk), lesson_id=Lesson(number_of_lesson=i))
-        except LessonComplete.DoesNotExist:
-            complete[i - 1] = False
-
-    titles = unable_title(request)
-    quiz = unable_quiz(request)
+    complete, titles, quiz = get_profile_details(request)
 
     return render(request, 'course/profile.html',
                   {'profile': profile, 'complete': complete, 'titles': titles, 'quiz': quiz})
+
+
+def quiz(request):
+    try:
+        profile = Profile.objects.get(user=request.user.id)
+    except Profile.DoesNotExist:
+        communicate = "Dostęp tylko dla zalogowanych!"
+        return render(request, 'index.html', {'communicate': communicate})
+
+    quiz, test_1_answer, test_2_answer, test_3_answer, test_4_answer, test_5_answer = get_quiz_details_base(request)
+    print(test_2_answer)
+    return render(request, 'course/quiz_progress.html',
+                  {'profile': profile, 'test_1': quiz[0], 'test_1_answer': test_1_answer, 'test_2': quiz[1],
+                   'test_2_answer': test_2_answer, 'test_3': quiz[2], 'test_3_answer': test_3_answer, 'test_4': quiz[3],
+                   'test_4_answer': test_4_answer, 'test_5': quiz[4], 'test_5_answer': test_5_answer})
+
+
+def quiz_details(request, quiz_id):
+    try:
+        profile = Profile.objects.get(user=request.user.id)
+    except Profile.DoesNotExist:
+        communicate = "Dostęp tylko dla zalogowanych!"
+        return render(request, 'index.html', {'communicate': communicate})
+
+
+    return render(request, 'course/quiz_detail.html',
+                  {'profile': profile})

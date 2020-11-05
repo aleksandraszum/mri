@@ -16,13 +16,13 @@
 <div class=" d-flex w-100 h-100  mx-auto flex-column">
 
 
-
     <nav class=" nav navbar-expand-lg navbar py-1 ">
         <div class="row align-items-center">
-            <div class="col-12">        <br>
+            <div class="col-12"><br>
 
                 <a class="py-2" href="#" aria-label="Product">
-                    <H1 class="text-center"> <a href="http://127.0.0.1:8000/"> Obrazowanie metodą <span class="base-color">rezonansu magnetycznego</span>
+                    <H1 class="text-center"><a href="http://127.0.0.1:8000/"> Obrazowanie metodą <span
+                            class="base-color">rezonansu magnetycznego</span>
                         bez tajemnic </a></H1>
                 </a>
 
@@ -37,12 +37,15 @@
                             <a class="py-2 d-none d-md-inline-block" href="{% url 'login_view' %}">Zaloguj się</a></div>
 
                     {% else %}
-                        <div class="col-4">
+                        <div class="col-3">
                             <a class="py-2 d-none d-md-inline-block" href="{% url 'profile' %}">Profil</a></div>
-                        <div class="col-4">
+                        <div class="col-3">
                             <a class="py-2 d-none d-md-inline-block" href="{% url 'lessons' %}">Lekcje</a></div>
-                        <div class="col-4">
-                            <a class="py-2 d-none d-md-inline-block" href="{% url 'logout_view' %}">Wyloguj się</a></div>
+                        <div class="col-3">
+                            <a class="py-2 d-none d-md-inline-block" href="{% url 'quiz' %}">Testy wiedzy</a></div>
+                        <div class="col-3">
+                            <a class="py-2 d-none d-md-inline-block" href="{% url 'logout_view' %}">Wyloguj się</a>
+                        </div>
                     {% endif %}
 
                 </div>
@@ -60,8 +63,8 @@
                        href="https://github.com/aleksandraszum/">
         Aleksandra Szum </a> 2020
     </footer>
-{% block script %}
-{% endblock %}
+    {% block script %}
+    {% endblock %}
 
 </div>
 {#<script async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"#}

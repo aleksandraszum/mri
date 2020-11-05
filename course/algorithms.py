@@ -248,7 +248,7 @@ def save_User_Answer(request, question_id, lesson_id):
                              question_7_id=Question.objects.get(pk=question_7.pk),
                              question_8_id=Question.objects.get(pk=question_8.pk),
 
-                             lesson=Lesson.objects.get(number_of_lesson=1), result=result)
+                             lesson=Lesson.objects.get(number_of_lesson=lesson_id), result=result)
     user_answer.save()
     if result > 90:
         communicate = "Zaliczyłeś moduł bardzo dobrze!\nMożesz przejść do kolejnej lekcji"
@@ -683,3 +683,89 @@ def unable_quiz(request):
         i = i + 1
 
     return titles
+
+
+def get_profile_details(request):
+    complete = [True, True, True, True, True]
+
+    for i in range(1, 6):
+        try:
+            lesson = LessonComplete.objects.get(user_id=User(pk=request.user.pk), lesson_id=Lesson(number_of_lesson=i))
+        except LessonComplete.DoesNotExist:
+            complete[i - 1] = False
+
+    titles = unable_title(request)
+    quiz = unable_quiz(request)
+
+    return complete, titles, quiz
+
+
+def get_lesson_details(request):
+    lesson_1 = unable_links(request, 1)
+    lesson_2 = unable_links(request, 2)
+    lesson_3 = unable_links(request, 3)
+    lesson_4 = unable_links(request, 4)
+    lesson_5 = unable_links(request, 5)
+    title_1 = Lesson.objects.get(number_of_lesson=1).title
+    title_2 = Lesson.objects.get(number_of_lesson=2).title
+    title_3 = Lesson.objects.get(number_of_lesson=3).title
+    title_4 = Lesson.objects.get(number_of_lesson=4).title
+    title_5 = Lesson.objects.get(number_of_lesson=5).title
+
+    return lesson_1, lesson_2, lesson_3, lesson_4, lesson_5, title_1, title_2, title_3, title_4, title_5
+
+
+def get_quiz_details_base(request):
+    quiz = [True, True, True, True, True]
+    last_part = [5, 9, 8, 8, 8]
+    number_of_lesson = [1, 2, 3, 4, 5]
+
+    for i in range(len(last_part)):
+        try:
+            progress = LessonProgress.objects.get(user_id=User(pk=request.user.pk), part=last_part[i],
+                                                  lesson_id=number_of_lesson[i])
+        except LessonProgress.DoesNotExist:
+            quiz[i] = False
+
+    test_1_answer = []
+    test_2_answer = []
+    test_3_answer = []
+    test_4_answer = []
+    test_5_answer = []
+
+    if quiz[0] == True:
+        try:
+            test_1_answer = reversed(
+                UserAnswer.objects.filter(user_id=User(pk=request.user.pk), lesson_id=1).order_by('-id')[:10])
+        except UserAnswer.DoesNotExist:
+            test_1_answer = False
+
+    if quiz[1] == True:
+        try:
+            test_2_answer = reversed(
+                UserAnswer.objects.filter(user_id=User(pk=request.user.pk), lesson_id=2).order_by('-id')[:10])
+        except UserAnswer.DoesNotExist:
+            test_2_answer = False
+
+    if quiz[2] == True:
+        try:
+            test_3_answer = reversed(
+                UserAnswer.objects.filter(user_id=User(pk=request.user.pk), lesson_id=3).order_by('-id')[:10])
+        except UserAnswer.DoesNotExist:
+            test_3_answer = False
+
+    if quiz[3] == True:
+        try:
+            test_4_answer = reversed(
+                UserAnswer.objects.filter(user_id=User(pk=request.user.pk), lesson_id=4).order_by('-id')[:10])
+        except UserAnswer.DoesNotExist:
+            test_4_answer = False
+
+    if quiz[4] == True:
+        try:
+            test_5_answer = reversed(
+                UserAnswer.objects.filter(user_id=User(pk=request.user.pk), lesson_id=5).order_by('-id')[:10])
+        except UserAnswer.DoesNotExist:
+            test_5_answer = False
+
+    return quiz, test_1_answer, test_2_answer, test_3_answer, test_4_answer, test_5_answer

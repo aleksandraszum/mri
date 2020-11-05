@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+
+{% block css %}
+    <style> {{ css|safe }}</style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="row text-center">
+        <div class="col-12"><h2>Ostatnie 10 wyników testów wiedzy użytkownika: {{ request.user.username }}</h2></div>
+        <div class="col-4">
+            {% if test_1 %}
+                <a class="base-color" href="{% url 'basicNMR_quiz' %}"><h3> Test 1: Podstawy fizyczne rezonansu
+                    magnetycznego</h3></a>
+                {% if test_1_answer == False %}
+                    <div class="row-cols-12">
+                        <p> Test nie został jeszcze wypełniony! </p>
+                    </div>
+                {% else %}
+                    <div class="row">
+                        <div class="col-4">
+                            Data:
+                        </div>
+                        <div class="col-4">
+                            Wynik:
+                        </div>
+                        <div class="col-4">
+                            Szczegóły:
+                        </div>
+                    </div>
+                    {% for item in test_1_answer %}
+                        <div class="row">
+                            <div class="col-4">
+                                {{ item.time|date:"d.m.yy" }}
+                            </div>
+                            <div class="col-4">
+                                {{ item.result }}
+                            </div>
+                            <div class="col-4">
+                                <a href="{% url 'quiz' %}{{ item.id }}" class="base-color">kliknij</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% else %}
+                <h3 class="base-color">Test 1: Podstawy fizyczne rezonansu magnetycznego
+                </h3>
+                <p> Nie masz jeszcze dostępu!</p>
+            {% endif %}
+        </div>
+
+        <div class="col-4">
+            {% if test_2 %}
+                <a class="base-color" href="{% url 'spin_echo_quiz' %}"><h3> Test 2: Sekwencja spin-echo</h3></a>
+                {% if test_2_answer == False %}
+                    <div class="row-cols-12">
+                        <p> Test nie został jeszcze wypełniony! </p>
+                    </div>
+                {% else %}
+
+                    <div class="row">
+                        <div class="col-4">
+                            Data:
+                        </div>
+                        <div class="col-4">
+                            Wynik:
+                        </div>
+                        <div class="col-4">
+                            Szczegóły:
+                        </div>
+                    </div>
+                    {% for item in test_2_answer %}
+                        <div class="row">
+                            <div class="col-4">
+                                {{ item.time|date:"d.m.yy" }}
+                            </div>
+                            <div class="col-4">
+                                {{ item.result }}
+                            </div>
+                            <div class="col-4">
+                                <a href="{% url 'quiz' %}{{ item.id }}" class="base-color">kliknij</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% else %}
+                <h3 class="base-color">Test 2: Sekwencja spin-echo
+                </h3>
+                <p> Nie masz jeszcze dostępu!</p>
+            {% endif %}
+
+        </div>
+
+        <div class="col-4">
+            {% if test_3 %}
+                <a class="base-color" href="{% url 'k_space_quiz' %}"><h3> Test 3: Dane w przestrzeni k</h3></a>
+                {% if test_3_answer == False %}
+                    <div class="row-cols-12">
+                        <p> Test nie został jeszcze wypełniony! </p>
+                    </div>
+                {% else %}
+
+                    <div class="row">
+                        <div class="col-4">
+                            Data:
+                        </div>
+                        <div class="col-4">
+                            Wynik:
+                        </div>
+                        <div class="col-4">
+                            Szczegóły:
+                        </div>
+                    </div>
+                    {% for item in test_3_answer %}
+                        <div class="row">
+                            <div class="col-4">
+                                {{ item.time|date:"d.m.yy" }}
+                            </div>
+                            <div class="col-4">
+                                {{ item.result }}
+                            </div>
+                            <div class="col-4">
+                                <a href="{% url 'quiz' %}{{ item.id }}" class="base-color">kliknij</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% else %}
+                <h3 class="base-color">Test 3: Dane w przestrzeni k
+                </h3>
+                <p> Nie masz jeszcze dostępu!</p>
+            {% endif %}
+
+        </div>
+        <div class="col-12"><br></div>
+
+        <div class="col-6">
+            {% if test_4 %}
+                <a class="base-color" href="{% url 'reconstruction_quiz' %}"><h3> Test 4: Rekonstrukcja danych</h3></a>
+                {% if test_4_answer == False %}
+                    <div class="row-cols-12">
+                        <p> Test nie został jeszcze wypełniony! </p>
+                    </div>
+                {% else %}
+
+                    <div class="row">
+                        <div class="col-4">
+                            Data:
+                        </div>
+                        <div class="col-4">
+                            Wynik:
+                        </div>
+                        <div class="col-4">
+                            Szczegóły:
+                        </div>
+                    </div>
+                    {% for item in test_4_answer %}
+                        <div class="row">
+                            <div class="col-4">
+                                {{ item.time|date:"d.m.yy" }}
+                            </div>
+                            <div class="col-4">
+                                {{ item.result }}
+                            </div>
+                            <div class="col-4">
+                                <a href="{% url 'quiz' %}{{ item.id }}" class="base-color">kliknij</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% else %}
+                <h3 class="base-color">Test 4: Rekonstrukcja danych
+                </h3>
+                <p> Nie masz jeszcze dostępu!</p>
+            {% endif %}
+
+        </div>
+        <div class="col-6">
+            {% if test_5 %}
+                <a class="base-color" href="{% url 'diffusion_quiz' %}"><h3> Test 5: Obrazowanie dyfuzji</h3></a>
+                {% if test_5_answer == False %}
+                    <div class="row-cols-12">
+                        <p> Test nie został jeszcze wypełniony! </p>
+                    </div>
+                {% else %}
+
+                    <div class="row">
+                        <div class="col-4">
+                            Data:
+                        </div>
+                        <div class="col-4">
+                            Wynik:
+                        </div>
+                        <div class="col-4">
+                            Szczegóły:
+                        </div>
+                    </div>
+                    {% for item in test_5_answer %}
+                        <div class="row">
+                            <div class="col-4">
+                                {{ item.time|date:"d.m.yy" }}
+                            </div>
+                            <div class="col-4">
+                                {{ item.result }}
+                            </div>
+                            <div class="col-4">
+                                <a href="{% url 'quiz' %}{{ item.id }}" class="base-color">kliknij</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% else %}
+                <h3 class="base-color">Test 5: Obrazowanie dyfuzji
+                </h3>
+                <p> Nie masz jeszcze dostępu!</p>
+            {% endif %}
+
+        </div>
+
+    </div>
+{% endblock %}
+
+
+{% block script %}
+
+
+    <script>
+        {{ js|safe }}
+    </script>
+    <script async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"
+            type="text/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+{% endblock %}
+
+

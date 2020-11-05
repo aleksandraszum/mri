@@ -84,7 +84,7 @@ class UserAnswer(models.Model):
     result = models.FloatField(default=0, blank=False)
 
     def __str__(self):
-        return f"{self.user} - {self.time}"
+        return f"{self.user} - {self.lesson}"
 
 
 class Profile(models.Model):
