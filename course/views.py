@@ -1,19 +1,12 @@
-import random
-import time
-
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import  logout
 from django.contrib.auth.models import User
-from django.db import models
-from django.forms import formset_factory
 from django.shortcuts import render
 
-from course.algorithms import last_next_content, push_content, my_reconstruction, generate_k_space_and_x_space_graphs, \
-    defining_links, lesson_progress_check, save_lesson_progress, lesson_complete, form_save, log_in, download_data, \
-    save_lesson_complete, save_User_Answer, last_result_get, question_get, image_get, lesson_progress_get, unable_title, \
-    lesson_complete_check, unable_quiz, unable_links, get_profile_details, get_lesson_details, get_quiz_details_base
+from course.algorithms import save_lesson_progress, lesson_complete, form_save, log_in, download_data, \
+    save_User_Answer, last_result_get, question_get, image_get, get_profile_details, get_lesson_details, \
+    get_quiz_details_base
 from course.forms import AlgorithmForm, SignUpForm, LoginForm, QuizForm
-from course.models import LessonProgress, Lesson, Question, Answer, UserAnswer, Profile, LessonComplete
-from random import shuffle
+from course.models import Answer, UserAnswer, Profile
 
 
 def index(request):
@@ -442,6 +435,22 @@ def quiz_details(request, quiz_id):
         communicate = "Dostęp tylko dla zalogowanych!"
         return render(request, 'index.html', {'communicate': communicate})
 
+    try:
+        quiz = UserAnswer.objects.get(user=User(pk=request.user.pk), pk=quiz_id)
+    except UserAnswer.DoesNotExist:
+        return render(request, 'course/quiz_detail.html',
+                      {'profile': profile, 'communicate': "Brak dostępu!"})
+
+    good_answer_1 = Answer.objects.get(question_id=quiz.question_1_id.pk, is_true=True).answer
+    good_answer_2 = Answer.objects.get(question_id=quiz.question_2_id.pk, is_true=True).answer
+    good_answer_3 = Answer.objects.get(question_id=quiz.question_3_id.pk, is_true=True).answer
+    good_answer_4 = Answer.objects.get(question_id=quiz.question_4_id.pk, is_true=True).answer
+    good_answer_5 = Answer.objects.get(question_id=quiz.question_5_id.pk, is_true=True).answer
+    good_answer_6 = Answer.objects.get(question_id=quiz.question_6_id.pk, is_true=True).answer
+    good_answer_7 = Answer.objects.get(question_id=quiz.question_7_id.pk, is_true=True).answer
+    good_answer_8 = Answer.objects.get(question_id=quiz.question_8_id.pk, is_true=True).answer
 
     return render(request, 'course/quiz_detail.html',
-                  {'profile': profile})
+                  {'profile': profile, 'quiz': quiz, 'good_answer_1': good_answer_1, 'good_answer_2': good_answer_2,
+                   'good_answer_3': good_answer_3, 'good_answer_4': good_answer_4, 'good_answer_5': good_answer_5,
+                   'good_answer_6': good_answer_6, 'good_answer_7': good_answer_7, 'good_answer_8': good_answer_8})

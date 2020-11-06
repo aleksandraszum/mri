@@ -72,3 +72,11 @@ footer {
 .p {
     color: black;
 }
+
+.good-answer{
+    color: green;
+}
+
+.bad-answer{
+    color: red;
+}

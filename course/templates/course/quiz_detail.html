@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block css %}
+    <style> {{ css|safe }}</style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="row text-justify">
+        {% if communicate %}
+           <div class="col-12 text-center"> <h1 class="base-color "> {{ communicate }}</h1></div>
+        {% else %}
+            <div class="col-12 text-center"><h1 class="base-color">Twoje odpowiedzi</h1></div>
+            <div class="col-12"><p>Pytanie 1: <b>{{ quiz.question_1_id.question }}</b></br>
+                Twoja odpowiedź:
+                {% if quiz.answer_1_id.is_true %}
+                    <b class="good-answer">{{ quiz.answer_1_id.answer }}</b>
+                {% else %}
+                    <b class="bad-answer">{{ quiz.answer_1_id.answer }}</b><br>
+                    Poprawna odpowiedź: <b class="good-answer"> {{ good_answer_1 }}</b>
+                {% endif %}</p>
+            </div>
+            <div class="col-12"><p>Pytanie 2: <b>{{ quiz.question_2_id.question }}</b></br>
+                Twoja odpowiedź:
+                {% if quiz.answer_2_id.is_true %}
+                    <b class="good-answer">{{ quiz.answer_2_id.answer }}</b>
+                {% else %}
+                    <b class="bad-answer">{{ quiz.answer_1_id.answer }}</b><br>
+                    Poprawna odpowiedź: <b class="good-answer"> {{ good_answer_2 }}</b>
+                {% endif %}</p>
+            </div>
+            <div class="col-12"><p>Pytanie 3: <b>{{ quiz.question_3_id.question }}</b></br>
+                Twoja odpowiedź:
+                {% if quiz.answer_3_id.is_true %}
+                    <b class="good-answer">{{ quiz.answer_3_id.answer }}</b>
+                {% else %}
+                    <b class="bad-answer">{{ quiz.answer_3_id.answer }}</b><br>
+                    Poprawna odpowiedź: <b class="good-answer"> {{ good_answer_3 }}</b>
+                {% endif %}</p>
+            </div>
+            <div class="col-12"><p>Pytanie 4: <b>{{ quiz.question_4_id.question }}</b></br>
+                Twoja odpowiedź:
+                {% if quiz.answer_4_id.is_true %}
+                    <b class="good-answer">{{ quiz.answer_4_id.answer }}</b>
+                {% else %}
+                    <b class="bad-answer">{{ quiz.answer_4_id.answer }}</b><br>
+                    Poprawna odpowiedź: <b class="good-answer"> {{ good_answer_4 }}</b>
+                {% endif %}</p>
+            </div>
+            <div class="col-12"><p>Pytanie 5: <b>{{ quiz.question_5_id.question }}</b></br>
+                Twoja odpowiedź:
+                {% if quiz.answer_5_id.is_true %}
+                    <b class="good-answer">{{ quiz.answer_5_id.answer }}</b>
+                {% else %}
+                    <b class="bad-answer">{{ quiz.answer_5_id.answer }}</b><br>
+                    Poprawna odpowiedź: <b class="good-answer"> {{ good_answer_5 }}</b>
+                {% endif %}</p>
+            </div>
+            <div class="col-12"><p>Pytanie 6: <b>{{ quiz.question_6_id.question }}</b></br>
+                Twoja odpowiedź:
+                {% if quiz.answer_6_id.is_true %}
+                    <b class="good-answer">{{ quiz.answer_6_id.answer }}</b>
+                {% else %}
+                    <b class="bad-answer">{{ quiz.answer_6_id.answer }}</b><br>
+                    Poprawna odpowiedź: <b class="good-answer"> {{ good_answer_6 }}</b>
+                {% endif %}</p>
+            </div>
+            <div class="col-12"><p>Pytanie 7: <b>{{ quiz.question_7_id.question }}</b></br>
+                Twoja odpowiedź:
+                {% if quiz.answer_7_id.is_true %}
+                    <b class="good-answer">{{ quiz.answer_7_id.answer }}</b>
+                {% else %}
+                    <b class="bad-answer">{{ quiz.answer_7_id.answer }}</b><br>
+                    Poprawna odpowiedź: <b class="good-answer"> {{ good_answer_7 }}</b>
+                {% endif %}</p>
+            </div>
+            <div class="col-12"><p>Pytanie 8: <b>{{ quiz.question_8_id.question }}</b></br>
+                Twoja odpowiedź:
+                {% if quiz.answer_8_id.is_true %}
+                    <b class="good-answer">{{ quiz.answer_8_id.answer }}</b>
+                {% else %}
+                    <b class="bad-answer">{{ quiz.answer_8_id.answer }}</b><br>
+                    Poprawna odpowiedź: <b class="good-answer"> {{ good_answer_8 }}</b>
+                {% endif %}</p>
+                <p>Twój wynik: <b>{{ quiz.result }} %</b>.</p>
+
+            </div>
+            <div class="col-12 text-center">
+                <a href="{% url 'quiz' %}">
+                    <button type="submit" class="btn btn-lg btn-secondary">Wróć</button>
+                </a>
+
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+
+
+{% block script %}
+
+
+    <script>
+        {{ js|safe }}
+    </script>
+    <script async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"
+            type="text/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+{% endblock %}
+
+

@@ -769,3 +769,5 @@ def get_quiz_details_base(request):
             test_5_answer = False
 
     return quiz, test_1_answer, test_2_answer, test_3_answer, test_4_answer, test_5_answer
+
+
