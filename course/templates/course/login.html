@@ -8,11 +8,7 @@
 
     <div class="row text-center text-perc">
         <div class="col-sm-12 mx-auto text-center">
-            <br>
-
-            {% if user.is_authenticated %}
-                {% include 'course/lesson_view.html' %}
-            {% else %}
+            {% if not user.is_authenticated %}
                 {% include 'course/login_form.html' %}
             {% endif %}
         </div>

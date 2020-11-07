@@ -59,12 +59,12 @@ def lesson_complete_check(user_id, lesson_id):
     return previous
 
 
-def lesson_complete_check_title(user_id, title):
+def lesson_check_title(user_id, title):
     previous = True
     try:
-        previous_lesson = LessonComplete.objects.get(user_id=user_id,
-                                                     lesson_id=Lesson.objects.get(title=title).number_of_lesson)
-    except LessonComplete.DoesNotExist:
+        previous_lesson = LessonProgress.objects.get(user_id=user_id,
+                                                     lesson_id=Lesson.objects.get(title=title).number_of_lesson, part=0)
+    except LessonProgress.DoesNotExist:
         previous = False
     return previous
 
@@ -659,7 +659,7 @@ def unable_title(request):
         'Obrazowanie dyfuzji': 'obrazowanie_dyfuzji'
     }
     for key in titles.keys():
-        if not lesson_complete_check_title(request.user.id, title=key):
+        if not lesson_check_title(request.user.id, title=key):
             if key != 'Podstawy fizyczne rezonansu magnetycznego':
                 titles[key] = None
 
@@ -689,9 +689,7 @@ def get_profile_details(request):
     complete = [True, True, True, True, True]
 
     for i in range(1, 6):
-        try:
-            lesson = LessonComplete.objects.get(user_id=User(pk=request.user.pk), lesson_id=Lesson(number_of_lesson=i))
-        except LessonComplete.DoesNotExist:
+        if not lesson_progress_check(request.user.id, i, 0):
             complete[i - 1] = False
 
     titles = unable_title(request)
@@ -769,5 +767,3 @@ def get_quiz_details_base(request):
             test_5_answer = False
 
     return quiz, test_1_answer, test_2_answer, test_3_answer, test_4_answer, test_5_answer
-
-

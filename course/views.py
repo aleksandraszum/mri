@@ -4,16 +4,26 @@ from django.shortcuts import render
 
 from course.algorithms import save_lesson_progress, lesson_complete, form_save, log_in, download_data, \
     save_User_Answer, last_result_get, question_get, image_get, get_profile_details, get_lesson_details, \
-    get_quiz_details_base
+    get_quiz_details_base, lesson_progress_check
 from course.forms import AlgorithmForm, SignUpForm, LoginForm, QuizForm
 from course.models import Answer, UserAnswer, Profile
 
 
 def index(request):
+    if request.user.is_authenticated:
+        profile = Profile.objects.get(user=request.user.id)
+        complete, titles, quiz = get_profile_details(request)
+        return render(request, 'course/profile.html',
+                      {'profile': profile, 'complete': complete, 'titles': titles, 'quiz': quiz})
     return render(request, 'index.html')
 
 
 def signup(request):
+    if request.user.is_authenticated:
+        profile = Profile.objects.get(user=request.user.id)
+        complete, titles, quiz = get_profile_details(request)
+        return render(request, 'course/profile.html',
+                      {'profile': profile, 'complete': complete, 'titles': titles, 'quiz': quiz})
     form = SignUpForm(request.POST)
     if form.is_valid():
         user, communicate, form = form_save(form, 'SignUpForm')
@@ -26,6 +36,11 @@ def login_view(request):
     form = LoginForm(request.POST)
     if form.is_valid():
         communicate = log_in(request, form)
+        if communicate == "Zalogowano pomyślnie!":
+            profile = Profile.objects.get(user=request.user.id)
+            complete, titles, quiz = get_profile_details(request)
+            return render(request, 'course/profile.html',
+                          {'profile': profile, 'complete': complete, 'titles': titles, 'quiz': quiz})
         return render(request, 'course/login.html',
                       {'user': request.user, 'form': form, 'communicate': communicate})
     return render(request, 'course/login.html', {'user': request.user, 'form': form})
@@ -408,7 +423,8 @@ def profile(request):
         return render(request, 'index.html', {'communicate': communicate})
 
     complete, titles, quiz = get_profile_details(request)
-
+    print(complete)
+    print(titles)
     return render(request, 'course/profile.html',
                   {'profile': profile, 'complete': complete, 'titles': titles, 'quiz': quiz})
 

@@ -31,7 +31,7 @@ class LessonProgress(models.Model):
     date = models.DateField(null=True, blank=True, default=datetime.now)
 
     def __str__(self):
-        return f"User: {self.user_id} - lesson: {self.lesson_id} - content: {self.part}"
+        return f"User: {self.user_id} - lesson: {self.lesson_id} - part: {self.part}"
 
 
 class LessonComplete(models.Model):
