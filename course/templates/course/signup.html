@@ -9,12 +9,14 @@
     <div class="row text-center text-perc">
         <div class="col-sm-12 mx-auto text-center">
             <br>
-            {% if communicate %}
+
+            {% if communicate == "Zarejestrowałeś się pomyślnie" %}
                 <p>{{ communicate }}</p>
                 <a href="{% url 'login_view' %}">
                     <button type="submit" class="btn btn-lg btn-secondary">Zaloguj się</button>
                 </a>
             {% else %}
+                <h2 class="base-color"> {{ communicate }} </h2>
                 <h1 class="base-color"> Zakładanie konta </h1>
                 <br>
                 <form method="post">

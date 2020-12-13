@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from mat4py import loadmat
 import matplotlib.pyplot as plt
 import pylab
-from course.forms import LoginForm, QuizForm, AlgorithmForm
+from course.forms import LoginForm, QuizForm, AlgorithmForm, SignUpForm
 from course.models import LessonContent, Lesson, LessonProgress, LessonComplete, UserAnswer, Question, Answer, Profile
 from random import shuffle
 
@@ -19,10 +19,18 @@ def form_save(form, formName):
         username = form.cleaned_data.get('username')
         raw_password = form.cleaned_data.get('password1')
         user = authenticate(username=username, password=raw_password)
-        profile = Profile(user=User(pk=user.pk))
-        profile.save()
-        communicate = "Zarejestrowałeś się pomyślnie"
-        form = LoginForm()
+        if user is not None:
+            profile = Profile(user=User(pk=user.pk))
+            profile.save()
+            communicate = "Zarejestrowałeś się pomyślnie"
+            form = LoginForm()
+        else:
+            raw_password2 = form.cleaned_data.get('password2')
+            if raw_password!=raw_password2:
+                communicate = "Hasła nie są takie same"
+            else:
+                communicate = "Uzytkownik o podanym loginie już istnieje"
+            form = SignUpForm()
         return user, communicate, form
 
 
