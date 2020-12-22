@@ -90,6 +90,14 @@ class UserAnswer(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     sign_up_date = models.DateField(null=True, blank=True, default=datetime.now)
+    birth_year = models.IntegerField(null=True, blank=True)
+    city = models.CharField(null=True, blank=True, max_length=50)
+    study = models.CharField(null=True, blank=True, max_length=50)
+
+    # user = models.OneToOneField(User, on_delete=models.CASCADE)
+    # sign_up_date = models.DateField(null=True, blank=True, default=datetime.now)
 
     def __str__(self):
         return f"{self.user}"
+
+

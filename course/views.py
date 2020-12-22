@@ -1,12 +1,12 @@
-from django.contrib.auth import  logout
+from django.contrib.auth import logout, authenticate
 from django.contrib.auth.models import User
 from django.shortcuts import render
-
 from course.algorithms import save_lesson_progress, lesson_complete, form_save, log_in, download_data, \
     save_User_Answer, last_result_get, question_get, image_get, get_profile_details, get_lesson_details, \
-    get_quiz_details_base, lesson_progress_check
+    get_quiz_details_base
 from course.forms import AlgorithmForm, SignUpForm, LoginForm, QuizForm
 from course.models import Answer, UserAnswer, Profile
+from django.utils.translation import activate
 
 
 def index(request):
@@ -24,12 +24,23 @@ def signup(request):
         complete, titles, quiz = get_profile_details(request)
         return render(request, 'course/profile.html',
                       {'profile': profile, 'complete': complete, 'titles': titles, 'quiz': quiz})
+    activate('pl')
     form = SignUpForm(request.POST)
     if form.is_valid():
-        user, communicate, form = form_save(form, 'SignUpForm')
-        return render(request, 'course/signup.html',
-                      {'user': request.user, 'communicate': communicate, 'form': form})
-    return render(request, 'course/signup.html', {'user': request.user, 'form': form})
+        form.save()
+        username = form.cleaned_data.get('username')
+        raw_password = form.cleaned_data.get('password1')
+        user = authenticate(username=username, password=raw_password)
+        if user is not None:
+            birth_year = int(form.cleaned_data.get('birth_year'))
+            city = form.cleaned_data.get('city')
+            study = form.cleaned_data.get('study')
+            profile = Profile(user=User(pk=user.pk), birth_year=birth_year, city=city, study=study)
+            profile.save()
+            communicate = "Zarejestrowałeś się pomyślnie"
+            return render(request, 'course/signup.html', {'communicate': communicate, 'form': form})
+
+    return render(request, 'course/signup.html', {'form': form})
 
 
 def login_view(request):

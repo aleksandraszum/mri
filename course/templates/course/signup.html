@@ -6,33 +6,48 @@
 
 {% block content %}
 
-    <div class="row text-center text-perc">
-        <div class="col-sm-12 mx-auto text-center">
+<div class="row text-center text-perc">
+    <div class="col-sm-12 mx-auto text-center">
+        <br>
+        {% if communicate == "Zarejestrowałeś się pomyślnie" %}
+            <p>{{ communicate }}</p>
+            <a href="{% url 'login_view' %}">
+                <button type="submit" class="btn btn-lg btn-secondary">Zaloguj się</button>
+            </a>
+        {% else %}
+            <h2 class="base-color"> {{ communicate }} </h2>
+            <h1 class="base-color"> Zakładanie konta </h1>
             <br>
+            <form method="post">
 
-            {% if communicate == "Zarejestrowałeś się pomyślnie" %}
-                <p>{{ communicate }}</p>
-                <a href="{% url 'login_view' %}">
-                    <button type="submit" class="btn btn-lg btn-secondary">Zaloguj się</button>
-                </a>
-            {% else %}
-                <h2 class="base-color"> {{ communicate }} </h2>
-                <h1 class="base-color"> Zakładanie konta </h1>
-                <br>
-                <form method="post">
-                    {% csrf_token %}
-                    {% for field in form %}
-                        <h3>
-                            {{ field.label_tag }}<br>
-                            {{ field }}<br>
-                        </h3>
-                    {% endfor %}<br>
-                    <button type="submit" class="btn btn-lg btn-secondary">Załóż konto</button>
-                </form>
+            {% csrf_token %}
+            {% for field in form %}
+                <h3>
+                    {{ field.label_tag }}<br></h3>
+                {% if form.errors %}
+                {% for error in field.errors %}
+                    {% if error != 'To pole jest wymagane.' %}
+                    <div class="alert alert-danger">
+                        <strong>{{ error|escape }}</strong>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            {% for error in form.non_field_errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
             {% endif %}
-        </div>
+        <p>{{ field.help_text }}</p>
+        <h3> {{ field }}<br>
+        </h3>
+        {% endfor %}<br>
+        <button type="submit" class="btn btn-lg btn-secondary">Załóż konto</button>
+        </form>
+        {% endif %}
     </div>
-    <br>
+</div>
+<br>
 
 
 {% endblock %}

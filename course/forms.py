@@ -1,19 +1,31 @@
+from datetime import datetime, date
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
 # from course.models import  Answer, Question
+from django.core.exceptions import ValidationError
+
 from course.models import Question, Answer
 
 
 class SignUpForm(UserCreationForm):
-    username = forms.CharField(label="Podaj nazwę użytkownika:")
-    password1 = forms.CharField(widget=forms.PasswordInput(), label="Podaj hasło:")
+    username = forms.CharField(label="Nazwa użytkownika:")
+    password1 = forms.CharField(widget=forms.PasswordInput(), label="Hasło:")
     password2 = forms.CharField(widget=forms.PasswordInput(), label="Powtórz hasło:")
+    first_name = forms.CharField(label="Imię (opcjonalne):", required=False)
+    last_name = forms.CharField(label="Nazwisko (opcjonalne):", required=False)
+    email = forms.EmailField(label="Email (opcjonalne):", required=False)
+    birth_year = forms.IntegerField(label="Data rok urodzenia (opcjonalne):", required=False)
+    city = forms.CharField(label="Miejsce zamieszkania (opcjonalnie):", required=False)
+    study = forms.CharField(label="Kierunek studiów (opcjonalnie):", required=False)
+
 
     class Meta:
         model = User
-        fields = ('username', 'password1', 'password2')
+        fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2')
+
 
 
 class LoginForm(forms.Form):
