@@ -90,7 +90,12 @@ class QuizForm(forms.Form):
 
 
 class EditProfileForm(forms.ModelForm):
-    birth_year = forms.IntegerField(min_value=1900, required=False)
+    birth_year = forms.IntegerField(min_value=1900, required=False, label="Rok urodzenia")
+    first_name = forms.CharField(required=False, label="Imię", max_length=50)
+    last_name = forms.CharField(required=False, label="Nazwisko", max_length=50)
+    city = forms.CharField(required=False, label="Miasto", max_length=50)
+    study = forms.CharField(required=False, label="Kierunek studiów", max_length=50)
+    email = forms.EmailField(required=False, label="Email")
 
     class Meta:
         model = Profile
