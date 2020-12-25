@@ -4,7 +4,7 @@ from django.shortcuts import render
 from course.algorithms import save_lesson_progress, lesson_complete, form_save, log_in, download_data, \
     save_User_Answer, last_result_get, question_get, image_get, get_profile_details, get_lesson_details, \
     get_quiz_details_base
-from course.forms import AlgorithmForm, SignUpForm, LoginForm, QuizForm
+from course.forms import AlgorithmForm, SignUpForm, LoginForm, QuizForm, EditProfileForm
 from course.models import Answer, UserAnswer, Profile
 from django.utils.translation import activate
 
@@ -102,7 +102,7 @@ def basic_nmr_quiz(request):
                       {'user': request.user, 'communicate': communicate})
     if progress:
         try:
-            last_result = last_result_get(request, 1)
+            last_result = last_result_get(request, 1 )
         except IndexError:
             last_result = False
         question_id = question_get(1)
@@ -434,10 +434,31 @@ def profile(request):
         return render(request, 'index.html', {'communicate': communicate})
 
     complete, titles, quiz = get_profile_details(request)
-    print(complete)
-    print(titles)
     return render(request, 'course/profile.html',
-                  {'profile': profile, 'complete': complete, 'titles': titles, 'quiz': quiz})
+                  {'user': request.user, 'profile': profile, 'complete': complete, 'titles': titles, 'quiz': quiz})
+
+
+def profile_edit(request):
+    try:
+        profile = Profile.objects.get(user=request.user.id)
+    except Profile.DoesNotExist:
+        communicate = "Dostęp tylko dla zalogowanych!"
+        return render(request, 'index.html', {'communicate': communicate})
+
+    profile = Profile.objects.get(user=request.user.id)
+    if request.method == 'POST':
+        form = EditProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            edit_profile = form.save(commit=False)
+            edit_profile.user = User(pk=request.user.id)
+            edit_profile.save()
+            complete, titles, quiz = get_profile_details(request)
+            return render(request, 'course/profile.html',
+                  {'user': request.user, 'profile': profile, 'complete': complete, 'titles': titles, 'quiz': quiz})
+
+    form = EditProfileForm(instance=profile)
+    return render(request, 'course/profile_edit.html',
+                  {'user': request.user, 'profile': profile, 'form': form})
 
 
 def quiz(request):

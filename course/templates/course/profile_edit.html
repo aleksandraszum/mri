@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-12 text-center">
+            <form method="post">
+
+                {% csrf_token %}
+                {% for field in form %}
+                    <h3>
+                        {{ field.label_tag }}<br></h3>
+                    {% if form.errors %}
+                        {% for error in field.errors %}
+                            {% if error != 'To pole jest wymagane.' %}
+                                <div class="alert alert-danger">
+                                    <strong>{{ error|escape }}</strong>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                <strong>{{ error|escape }}</strong>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    <p>{{ field.help_text }}</p>
+                    <h3> {{ field }}<br>
+                    </h3>
+                {% endfor %}<br>
+                <button type="submit" class="btn btn-lg btn-secondary">Zapisz</button>
+            </form>
+
+        </div>
+
+
+    </div>
+{% endblock %}

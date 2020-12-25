@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator
 from django.db import models
 from datetime import datetime, date
 
@@ -89,13 +90,13 @@ class UserAnswer(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    first_name = models.CharField(null=True, blank=True, max_length=50)
+    last_name = models.CharField(null=True, blank=True, max_length=50)
+    email = models.EmailField(null=True, blank=True)
     sign_up_date = models.DateField(null=True, blank=True, default=datetime.now)
-    birth_year = models.IntegerField(null=True, blank=True)
+    birth_year = models.PositiveIntegerField(null=True, blank=True)
     city = models.CharField(null=True, blank=True, max_length=50)
     study = models.CharField(null=True, blank=True, max_length=50)
-
-    # user = models.OneToOneField(User, on_delete=models.CASCADE)
-    # sign_up_date = models.DateField(null=True, blank=True, default=datetime.now)
 
     def __str__(self):
         return f"{self.user}"

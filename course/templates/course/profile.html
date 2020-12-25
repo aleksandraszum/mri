@@ -3,12 +3,24 @@
 {% block content %}
 
     <div class="row">
-        <div class="col-3 text-justify">
+        <div class="col-3 text-center">
+        </div>
+        <div class="col-3 text-center">
+            <H1 class="base-color text-center">Profil {{ profile.user }}</H1>
+            <p><b>Login</b>: {{ user.username }} </p>
+            <p><b>Rok urodzenia</b>: {% if profile.birth_year == None %}brak danych {% else %}{{ profile.birth_year }}{% endif %} </p>
+            <p><b>Imię</b>: {% if profile.first_name == None %}brak danych {% else %}{{ profile.first_name }}{% endif %} </p>
+            <p><b>Nazwisko</b>: {% if profile.last_name == None %}brak danych {% else %}{{ profile.last_name }}{% endif %} </p>
+            <p><b>E-mail</b>: {% if profile.email == None %}brak danych {% else %}{{ profile.email }}{% endif %} </p>
+            <p><b>Miasto zamieszkania</b>: {% if profile.city == None %}brak danych {% else %}{{ profile.city }}{% endif %} </p>
+            <p><b>Kierunek studiów</b>: {% if profile.study == None %}brak danych {% else %}{{ profile.study }}{% endif %} </p>
+            <p><b>Data założenia konta</b>: {{ profile.sign_up_date|date:"d.m.yy" }} </p>
+            <div class=align-items-center"><a href="{% url 'profile_edit' %}">
+                <button type="submit" class="btn btn-lg btn-secondary">Edytuj profil</button>
+            </a></div>
         </div>
         <div class="col-6 text-justify">
-            <H1 class="base-color text-center">Profil {{ profile.user }}</H1>
-            <p>Data założenia konta: {{ profile.sign_up_date|date:"d.m.yy" }} </p>
-            <p>Twoje lekcje:</p>
+            <H1 class="base-color text-center">Twoje lekcje:</H1>
             <ol class="menu-links font-weight-bold">
                 {% for key, value in titles.items %}
                     {% if value == None %}
@@ -19,7 +31,7 @@
                 {% endfor %}
             </ol>
 
-            <p>Twoje testy wiedzy:</p>
+           <H1 class="base-color text-center">Twoje testy wiedzy:</H1>
             <ol class="menu-links font-weight-bold">
                 {% for key, value in quiz.items %}
                     {% if value == None %}

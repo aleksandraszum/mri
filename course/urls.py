@@ -25,6 +25,7 @@ urlpatterns = [
     url(r'^obrazowanie_dyfuzji/quiz$', views.diffusion_quiz, name='diffusion_quiz'),
     url(r'^lekcje/$', views.lessons, name='lessons'),
     url(r'^profil/$', views.profile, name='profile'),
+    url(r'^profil/edit$', views.profile_edit, name='profile_edit'),
     url(r'^testy_wiedzy/$', views.quiz, name='quiz'),
     url(r'^testy_wiedzy/([0-9]+)/$', views.quiz_details, name='quiz_details'),
 

@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 # from course.models import  Answer, Question
 from django.core.exceptions import ValidationError
 
-from course.models import Question, Answer
+from course.models import Question, Answer, Profile
 
 
 class SignUpForm(UserCreationForm):
@@ -17,15 +17,13 @@ class SignUpForm(UserCreationForm):
     first_name = forms.CharField(label="Imię (opcjonalne):", required=False)
     last_name = forms.CharField(label="Nazwisko (opcjonalne):", required=False)
     email = forms.EmailField(label="Email (opcjonalne):", required=False)
-    birth_year = forms.IntegerField(label="Data rok urodzenia (opcjonalne):", required=False)
+    birth_year = forms.IntegerField(label="Data rok urodzenia (opcjonalne):", required=False, min_value=1900)
     city = forms.CharField(label="Miejsce zamieszkania (opcjonalnie):", required=False)
     study = forms.CharField(label="Kierunek studiów (opcjonalnie):", required=False)
 
-
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2')
-
+        fields = ('username', 'password1', 'password2')
 
 
 class LoginForm(forms.Form):
@@ -89,3 +87,17 @@ class QuizForm(forms.Form):
                                            Answer.objects.filter(question_id=question[7])]
         if self.fields['answer_8'].label is None:
             self.fields['answer_8'].label = Question.objects.get(pk=question[7]).question
+
+
+class EditProfileForm(forms.ModelForm):
+    birth_year = forms.IntegerField(min_value=1900, required=False)
+
+    class Meta:
+        model = Profile
+        fields = ('first_name', 'last_name', 'email', 'birth_year', 'city', 'study')
+        widgets = {
+            'first_name': forms.TextInput(attrs={'size': '50'}),
+            'last_name': forms.TextInput(attrs={'size': '50'}),
+            'city': forms.TextInput(attrs={'size': '50'}),
+            'study': forms.TextInput(attrs={'size': '50'}),
+        }
