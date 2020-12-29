@@ -32,7 +32,7 @@ def signup(request):
         raw_password = form.cleaned_data.get('password1')
         user = authenticate(username=username, password=raw_password)
         if user is not None:
-            birth_year = int(form.cleaned_data.get('birth_year'))
+            birth_year = form.cleaned_data.get('birth_year')
             city = form.cleaned_data.get('city')
             study = form.cleaned_data.get('study')
             profile = Profile(user=User(pk=user.pk), birth_year=birth_year, city=city, study=study)
